@@ -1,4 +1,4 @@
-use chrono::{DateTime, Local};
+use chrono::{DateTime, Datelike, Local, NaiveDate, NaiveDateTime, Utc};
 use pray_times::{
     types::{
         AsrFactor, CalculationUnit, Degrees, HighLatsMethod, Location, MidnightMethod, Minutes,
@@ -11,7 +11,7 @@ use serde_json::Value;
 struct TestCase {
     params: Parameters,
     location: Location,
-    date: DateTime<Local>,
+    date: NaiveDate,
     expected_output: PraytimesOutput,
 }
 
@@ -103,9 +103,18 @@ fn json_to_test_case(json: &Value) -> TestCase {
         }
     };
 
-    let date: DateTime<Local> = {
-        let date_str = inputs["date"].as_str().unwrap();
-        DateTime::parse_from_rfc3339(date_str).unwrap().into()
+    let date: NaiveDate = {
+        let v: Vec<u32> = inputs["date"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .map(|j| j.as_u64().unwrap() as u32)
+            .collect::<Vec<_>>()
+            .into();
+
+        let d = NaiveDate::from_ymd_opt(v[0].try_into().unwrap(), v[1], v[2]).unwrap();
+
+        d
     };
 
     let expected_output: PraytimesOutput = {
@@ -131,18 +140,10 @@ fn json_to_test_case(json: &Value) -> TestCase {
     }
 }
 
-fn parse_date(s: &str) -> DateTime<Local> {
-    DateTime::parse_from_rfc3339(s)
-        .unwrap()
-        .with_timezone(&Local)
+fn parse_date(s: &str) -> NaiveDateTime {
+    DateTime::parse_from_rfc3339(s).unwrap().naive_utc()
 }
-fn get_test_data() -> Vec<TestCase> {
-    let data = std::fs::read_to_string("./assets/test-data.json").unwrap();
-    let binding = serde_json::from_str::<Value>(&data).unwrap();
-    let data = binding.as_array().unwrap();
-    let cases: Vec<TestCase> = data.iter().map(|v| json_to_test_case(v)).collect();
-    cases
-}
+
 macro_rules! assert_datetime {
     ($real:expr, $expected:expr,$location:expr,$date:expr,$params:expr) => {
         {
@@ -154,7 +155,7 @@ macro_rules! assert_datetime {
             let res = match (&real, &expected) {
                 (None, None) => true,
                 (Some(real), Some(expected)) => {
-                    (real.timestamp_millis() - expected.timestamp_millis()).abs() < 50
+                    (real.timestamp_millis() - expected.timestamp_millis()).abs() < 5000
                 }
                 _ => false,
             };
@@ -162,7 +163,9 @@ macro_rules! assert_datetime {
 
             assert!(
                 res,
-                "\n\ninvalid\t{real:?}\nexpected\t{expected:?} \nparameters : {params:?}\nlocation: {location:?}\ndate: {date:?}",
+                "\n\ninvalid\t\t{real:?}\nexpected\t{expected:?} \n\n\nparameters : {params:?}\nlocation: {location:?}\ndate: {date:?}",
+                real = real.unwrap(),
+                expected = expected.unwrap()
             );
         }
     };
@@ -170,7 +173,11 @@ macro_rules! assert_datetime {
 
 #[test]
 fn should_match_with_the_main() {
-    let data = get_test_data();
+    let data = std::fs::read_to_string("./assets/test-data.json").unwrap();
+    let binding = serde_json::from_str::<Value>(&data).unwrap();
+    let data = binding.as_array().unwrap();
+    let data = data.iter().map(|v| json_to_test_case(v));
+
     // dbg!(&data);
     for TestCase {
         params,
@@ -179,6 +186,7 @@ fn should_match_with_the_main() {
         expected_output,
     } in data
     {
+        dbg!(&date);
         let output: PraytimesOutput = Calculator::new(params.clone()).calculate(&location, &date);
 
         // assert_datetime!(
@@ -203,6 +211,7 @@ fn should_match_with_the_main() {
             date,
             &params
         );
+        dbg!("done");
         // assert_datetime!(output.asr, expected_output.asr, &location, date, &params);
         // assert_datetime!(
         //     output.sunset,

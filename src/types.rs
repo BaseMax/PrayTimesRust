@@ -1,4 +1,4 @@
-use chrono::{DateTime, Local};
+use chrono::{DateTime, Local, NaiveDateTime};
 
 #[derive(Debug, Clone, Copy, Eq, PartialEq)]
 pub enum MidnightMethod {
@@ -74,13 +74,13 @@ pub struct Location {
 
 #[derive(Debug, Default, Clone, PartialEq)]
 pub struct PraytimesOutput {
-    pub imsak: Option<DateTime<Local>>,
-    pub fajr: Option<DateTime<Local>>,
-    pub sunrise: Option<DateTime<Local>>,
-    pub dhuhr: Option<DateTime<Local>>,
-    pub asr: Option<DateTime<Local>>,
-    pub sunset: Option<DateTime<Local>>,
-    pub maghrib: Option<DateTime<Local>>,
-    pub isha: Option<DateTime<Local>>,
-    pub midnight: Option<DateTime<Local>>,
+    pub imsak: Option<NaiveDateTime>,
+    pub fajr: Option<NaiveDateTime>,
+    pub sunrise: Option<NaiveDateTime>,
+    pub dhuhr: Option<NaiveDateTime>,
+    pub asr: Option<NaiveDateTime>,
+    pub sunset: Option<NaiveDateTime>,
+    pub maghrib: Option<NaiveDateTime>,
+    pub isha: Option<NaiveDateTime>,
+    pub midnight: Option<NaiveDateTime>,
 }

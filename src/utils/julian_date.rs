@@ -1,8 +1,8 @@
-use chrono::{DateTime, Datelike, Local};
+use chrono::{DateTime, Datelike, Local, NaiveDate};
 
 use crate::types::Location;
 
-pub fn to_julian_date(date: &DateTime<Local>, location: &Location) -> f64 {
+pub fn to_julian_date(date: &NaiveDate, location: &Location) -> f64 {
     let julian = julian_from_gregorian(date.year(), date.month(), date.day());
     julian - location.longitude / (15.0 * 24.0)
 }
