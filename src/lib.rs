@@ -1,4 +1,4 @@
-use chrono::{ Datelike, NaiveDate, TimeZone, Timelike, Utc, NaiveDateTime};
+use chrono::{Datelike, NaiveDate, NaiveDateTime, TimeZone, Timelike, Utc};
 use types::{Location, Parameters, PraytimesOutput};
 use utils::{julian_date::to_julian_date, numbers::fix_hour, sun_position::sun_position};
 
@@ -35,6 +35,7 @@ impl<'a> InternalCalculator<'a> {
             ..Default::default()
         }
     }
+
     fn mid_day(&self, time: f64) -> f64 {
         let sun_pos = sun_position(self.julian_date + time);
 
@@ -56,11 +57,12 @@ impl<'a> InternalCalculator<'a> {
             return None;
         }
 
-        dbg!(self.date);
-        
-        let time = self.date.and_hms_milli_opt(0, 0, 0,0).unwrap().timestamp_millis()+(hours * 3600.0 * 1000.0) as i64;
+        let time = self
+            .date
+            .and_hms_milli_opt(0, 0, 0, 0)
+            .unwrap()
+            .timestamp_millis()
+            + (hours * 3600.0 * 1000.0) as i64;
         Some(NaiveDateTime::from_timestamp_millis(time).unwrap())
-
-
     }
 }
