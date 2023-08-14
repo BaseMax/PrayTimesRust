@@ -18,7 +18,7 @@ pub fn arccos(x: f64) -> f64 {
     x.acos().to_degrees()
 }
 
-pub fn arctan(x: f64) -> f64 {
+pub fn _arctan(x: f64) -> f64 {
     x.atan().to_degrees()
 }
 

@@ -20,8 +20,9 @@ repos:
     hooks:
       - id: test
         name: test
-        entry: cargo test
+        entry: cargo test --
         language: system
         files: "rs"
         always_run: true
         require_serial: true
+        args : []

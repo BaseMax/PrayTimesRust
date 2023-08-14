@@ -1,4 +1,4 @@
-use chrono::{DateTime, Local, NaiveDateTime};
+use chrono::NaiveDateTime;
 
 #[derive(Debug, Clone, Copy, Eq, PartialEq)]
 pub enum MidnightMethod {

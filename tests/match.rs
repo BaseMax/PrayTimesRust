@@ -1,4 +1,4 @@
-use chrono::{DateTime, Datelike, Local, NaiveDate, NaiveDateTime, Utc};
+use chrono::{DateTime, NaiveDate, NaiveDateTime};
 use pray_times::{
     types::{
         AsrFactor, CalculationUnit, Degrees, HighLatsMethod, Location, MidnightMethod, Minutes,
@@ -145,13 +145,15 @@ fn parse_date(s: &str) -> NaiveDateTime {
 }
 
 macro_rules! assert_datetime {
-    ($real:expr, $expected:expr,$location:expr,$date:expr,$params:expr) => {
+    ($real:expr, $expected:expr,$location:expr,$date:expr,$params:expr,$expected_output:expr,$output:expr) => {
         {
             let real = $real;
             let expected = $expected;
             let location = $location;
             let date = $date;
             let params = $params;
+            let expected_output = $expected_output;
+            let output = $output;
             let res = match (&real, &expected) {
                 (None, None) => true,
                 (Some(real), Some(expected)) => {
@@ -163,9 +165,9 @@ macro_rules! assert_datetime {
 
             assert!(
                 res,
-                "\n\ninvalid\t\t{real:?}\nexpected\t{expected:?} \n\n\nparameters : {params:?}\nlocation: {location:?}\ndate: {date:?}",
-                real = real.unwrap(),
-                expected = expected.unwrap()
+                "\n\ninvalid\t\t{real:?}\nexpected\t{expected:?} \n\n\nparameters : {params:#?}\nlocation: {location:#?}\ndate: {date:?}\nexpected output : {expected_output:#?}\n output : {output:#?}",
+                real = real,
+                expected = expected
             );
         }
     };
@@ -188,52 +190,90 @@ fn should_match_with_the_main() {
     {
         dbg!(&date);
         let output: PraytimesOutput = Calculator::new(params.clone()).calculate(&location, &date);
-
-        // assert_datetime!(
-        //     output.imsak,
-        //     expected_output.imsak,
-        //     &location,
-        //     date,
-        //     &params
-        // );
-        // assert_datetime!(output.fajr, expected_output.fajr, &location, date, &params);
-        // assert_datetime!(
-        //     output.sunrise,
-        //     expected_output.sunrise,
-        //     &location,
-        //     date,
-        //     &params
-        // );
+        assert_datetime!(
+            output.sunrise,
+            expected_output.sunrise,
+            &location,
+            date,
+            &params,
+            &expected_output,
+            &output
+        );
         assert_datetime!(
             output.dhuhr,
             expected_output.dhuhr,
             &location,
             date,
-            &params
+            &params,
+            &expected_output,
+            &output
+        );
+        assert_datetime!(
+            output.sunset,
+            expected_output.sunset,
+            &location,
+            date,
+            &params,
+            &expected_output,
+            &output
+        );
+
+        assert_datetime!(
+            output.fajr,
+            expected_output.fajr,
+            &location,
+            date,
+            &params,
+            &expected_output,
+            &output
+        );
+
+        assert_datetime!(
+            output.imsak,
+            expected_output.imsak,
+            &location,
+            date,
+            &params,
+            &expected_output,
+            &output
+        );
+
+        assert_datetime!(
+            output.maghrib,
+            expected_output.maghrib,
+            &location,
+            date,
+            &params,
+            &expected_output,
+            &output
+        );
+        assert_datetime!(
+            output.isha,
+            expected_output.isha,
+            &location,
+            date,
+            &params,
+            &expected_output,
+            &output
+        );
+        assert_datetime!(
+            output.midnight,
+            expected_output.midnight,
+            &location,
+            date,
+            &params,
+            &expected_output,
+            &output
+        );
+        assert_datetime!(
+            output.asr,
+            expected_output.asr,
+            &location,
+            date,
+            &params,
+            &expected_output,
+            &output
         );
         dbg!("done");
-        // assert_datetime!(output.asr, expected_output.asr, &location, date, &params);
-        // assert_datetime!(
-        //     output.sunset,
-        //     expected_output.sunset,
-        //     &location,
-        //     date,
-        //     &params
-        // );
-        // assert_datetime!(
-        //     output.maghrib,
-        //     expected_output.maghrib,
-        //     &location,
-        //     date,
-        //     &params
-        // );
-        // assert_datetime!(output.isha, expected_output.isha, &location, date, &params);
-        // assert_datetime!(
-        //     output.midnight,
-        //     expected_output.midnight,
-        //     &location,
-        //     date,
-        //     &params
-        // );
     }
 }
