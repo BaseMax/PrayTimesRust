@@ -1,0 +1,2 @@
+[codespell]
+skip = assets/*.json,*.js,dist/**/*,tests/original/PrayTimes.js
