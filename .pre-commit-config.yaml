@@ -12,8 +12,10 @@ repos:
     rev: v2.2.4
     hooks:
       - id: codespell
-        # args: ["--config=./.codespellrc"]
-        #
+  - repo: https://github.com/doublify/pre-commit-rust
+    rev: master
+    hooks:
+      - id: fmt
   - repo: local
     hooks:
       - id: test
