@@ -144,33 +144,30 @@ fn parse_date(s: &str) -> NaiveDateTime {
     DateTime::parse_from_rfc3339(s).unwrap().naive_utc()
 }
 
-macro_rules! assert_datetime {
-    ($real:expr, $expected:expr,$location:expr,$date:expr,$params:expr,$expected_output:expr,$output:expr) => {
-        {
-            let real = $real;
-            let expected = $expected;
-            let location = $location;
-            let date = $date;
-            let params = $params;
-            let expected_output = $expected_output;
-            let output = $output;
-            let res = match (&real, &expected) {
-                (None, None) => true,
-                (Some(real), Some(expected)) => {
-                    (real.timestamp_millis() - expected.timestamp_millis()).abs() < 5000
-                }
-                _ => false,
-            };
-
-
-            assert!(
-                res,
-                "\n\ninvalid\t\t{real:?}\nexpected\t{expected:?} \n\n\nparameters : {params:#?}\nlocation: {location:#?}\ndate: {date:?}\nexpected output : {expected_output:#?}\n output : {output:#?}",
-                real = real,
-                expected = expected
-            );
+fn assert_prayertime(
+    name: &str,
+    real: Option<NaiveDateTime>,
+    expected: Option<NaiveDateTime>,
+    location: &Location,
+    date: chrono::NaiveDate,
+    params: &Parameters,
+    expected_output: &PraytimesOutput,
+    output: &PraytimesOutput,
+) {
+    let res = match (&real, &expected) {
+        (None, None) => true,
+        (Some(real), Some(expected)) => {
+            (real.timestamp_millis() - expected.timestamp_millis()).abs() < 5000
         }
+        _ => false,
     };
+
+    assert!(
+        res,
+        "\n\ninvalid {name}\t\t{real:?}\nexpected\t{expected:?} \n\n\nparameters : {params:#?}\nlocation: {location:#?}\ndate: {date:?}\nexpected output : {expected_output:#?}\n output : {output:#?}",
+        real = real,
+        expected = expected
+    );
 }
 
 #[test]
@@ -190,89 +187,98 @@ fn should_match_with_the_main() {
     {
         dbg!(&date);
         let output: PraytimesOutput = Calculator::new(params.clone()).calculate(&location, &date);
-        assert_datetime!(
+        assert_prayertime(
+            "sunrise",
             output.sunrise,
             expected_output.sunrise,
             &location,
             date,
             &params,
             &expected_output,
-            &output
+            &output,
         );
-        assert_datetime!(
+        assert_prayertime(
+            "dhuhr",
             output.dhuhr,
             expected_output.dhuhr,
             &location,
             date,
             &params,
             &expected_output,
-            &output
+            &output,
         );
-        assert_datetime!(
+        assert_prayertime(
+            "sunset",
             output.sunset,
             expected_output.sunset,
             &location,
             date,
             &params,
             &expected_output,
-            &output
+            &output,
         );
 
-        assert_datetime!(
+        assert_prayertime(
+            "fajr",
             output.fajr,
             expected_output.fajr,
             &location,
             date,
             &params,
             &expected_output,
-            &output
+            &output,
         );
 
-        assert_datetime!(
+        assert_prayertime(
+            "imsak",
             output.imsak,
             expected_output.imsak,
             &location,
             date,
             &params,
             &expected_output,
-            &output
+            &output,
         );
 
-        assert_datetime!(
+        assert_prayertime(
+            "maghrib",
             output.maghrib,
             expected_output.maghrib,
             &location,
             date,
             &params,
             &expected_output,
-            &output
+            &output,
         );
-        assert_datetime!(
+        assert_prayertime(
+            "isha",
             output.isha,
             expected_output.isha,
             &location,
             date,
             &params,
             &expected_output,
-            &output
+            &output,
         );
-        assert_datetime!(
+        assert_prayertime(
+            "midnight",
             output.midnight,
             expected_output.midnight,
             &location,
             date,
             &params,
             &expected_output,
-            &output
+            &output,
         );
-        assert_datetime!(
+        assert_prayertime(
+            "asr",
             output.asr,
             expected_output.asr,
             &location,
             date,
             &params,
             &expected_output,
-            &output
+            &output,
         );
         dbg!("done");
     }
