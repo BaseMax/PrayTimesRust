@@ -40,10 +40,10 @@ impl Calculator {
             _ => time,
         }
     }
-    pub fn new(params: Parameters) -> Self {
+    pub fn new(params: Parameters, tuning_offsets: TuneOffsets) -> Self {
         Self {
             params,
-            tuning_offsets: Default::default(),
+            tuning_offsets,
         }
     }
 }

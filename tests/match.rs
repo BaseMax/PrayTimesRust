@@ -1,6 +1,6 @@
-use chrono::{Datelike, NaiveDate, NaiveDateTime};
+use chrono::{Datelike, NaiveDate, NaiveDateTime, Timelike};
 use pray_times::{
-    types::{Location, Parameters, PraytimesOutput},
+    types::{Location, Parameters, PraytimesOutput, TuneOffsets},
     Calculator,
 };
 use serde::{ser::SerializeSeq, Deserialize, Deserializer, Serialize, Serializer};
@@ -67,14 +67,7 @@ fn assert_prayertime(
 
 #[test]
 fn should_match_with_the_main() {
-    let data = std::fs::read_to_string("./assets/test-data.json").unwrap();
-    // let binding = serde_json::from_str::<Value>(&data).unwrap();
-    // let mut data = binding.as_array().unwrap();
-    let data = serde_json::from_str::<Vec<TestCase>>(&data).unwrap();
-
-    // let case = methods::SHIA_ITHNA_ASHARI_LEVA_INSTITUTE_QUM;
-    // let json = serde_json::ser::to_string_pretty(&case).unwrap();
-    println!("{:#?}", &data);
+    let data = get_data();
     for TestCase {
         inputs: Inputs {
             params,
@@ -84,7 +77,8 @@ fn should_match_with_the_main() {
         expected_output,
     } in data
     {
-        let output: PraytimesOutput = Calculator::new(params.clone()).calculate(&location, &date);
+        let output: PraytimesOutput =
+            Calculator::new(params.clone(), Default::default()).calculate(&location, &date);
         assert_prayertime(
             "sunrise",
             output.sunrise,
@@ -178,6 +172,35 @@ fn should_match_with_the_main() {
             &expected_output,
             &output,
         );
-        dbg!("done");
     }
+}
+
+fn get_data() -> Vec<TestCase> {
+    let data = std::fs::read_to_string("./assets/test-data.json").unwrap();
+    let data = serde_json::from_str::<Vec<TestCase>>(&data).unwrap();
+    data
+}
+
+#[test]
+fn should_tune_successfully() {
+    let data = get_data()[0].clone();
+
+    let output: PraytimesOutput = Calculator::new(
+        data.inputs.params.clone(),
+        TuneOffsets {
+            dhuhr: Some(3.1),
+            ..Default::default()
+        },
+    )
+    .calculate(&data.inputs.location, &data.inputs.date);
+
+    assert_eq!(
+        output.dhuhr.unwrap().minute() - 3,
+        data.expected_output.dhuhr.unwrap().minute()
+    );
+
+    assert_eq!(
+        output.dhuhr.unwrap().second() - 6,
+        data.expected_output.dhuhr.unwrap().second()
+    )
 }

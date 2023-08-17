@@ -34,9 +34,6 @@ impl<'a> InternalCalculator<'a> {
     pub(crate) fn midnight(&self) -> f64 {
         let sunset = self.sunset();
         let sunrise = self.sunrise();
-        dbg!(&sunset);
-        dbg!(&sunrise);
-        dbg!(Self::time_difference(sunrise, sunset));
         let midnight = match self.params.midnight {
             MidnightMethod::Standard => sunset + Self::time_difference(sunset, sunrise) / 2.0,
             MidnightMethod::Jafari => sunset + Self::time_difference(sunset, self.fajr()) / 2.0,
@@ -92,9 +89,7 @@ impl<'a> InternalCalculator<'a> {
     }
     pub(crate) fn dhuhr(&self) -> f64 {
         let mid_day = self.mid_day(12.0 / 24.0);
-        dbg!(&mid_day);
         let var_name = mid_day + self.params.dhuhr.minutes / 60.0;
-        dbg!(&var_name);
         var_name
     }
 
@@ -146,9 +141,7 @@ impl<'a> InternalCalculator<'a> {
     pub fn fajr(&self) -> f64 {
         let angle = self.params.fajr.degree;
         let time = self.mid_day(5.0 / 24.0) - self.sat(5.0 / 24.0, angle);
-        dbg!(time);
         if self.high_lat_adjustment_needed(time, self.sunrise(), angle) {
-            dbg!("adjusting for high lats");
             self.sunrise() - self.night_portion(angle)
         } else {
             time
