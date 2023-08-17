@@ -108,3 +108,17 @@ pub struct PraytimesOutput {
     pub isha: Option<NaiveDateTime>,
     pub midnight: Option<NaiveDateTime>,
 }
+
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[derive(Debug, Clone, PartialEq, Default)]
+pub struct TuneOffsets {
+    pub imsak: Option<f64>,
+    pub fajr: Option<f64>,
+    pub sunrise: Option<f64>,
+    pub dhuhr: Option<f64>,
+    pub asr: Option<f64>,
+    pub sunset: Option<f64>,
+    pub maghrib: Option<f64>,
+    pub isha: Option<f64>,
+    pub midnight: Option<f64>,
+}
