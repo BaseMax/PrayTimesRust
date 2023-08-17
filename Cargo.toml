@@ -1,5 +1,5 @@
 [package]
-name = "pray_times"
+name = "praytimes"
 version = "0.1.0"
 edition = "2021"
 

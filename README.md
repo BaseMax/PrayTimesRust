@@ -48,10 +48,13 @@ let output: PraytimesOutput = calculator
 
 see [lib.rs docs](https://lib.rs/praytimes)
 
+
 ## Credits
 
 PrayTimes.js is based on [PrayTimes](http://praytimes.org). Cities dataset from
 [countries-states-cities-database](https://github.com/dr5hn/countries-states-cities-database).
+
+Based on javascript refactor from [time-pray](https://github.com/BaseMax/TimePrayTS)
 
 ## License
 

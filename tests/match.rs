@@ -1,5 +1,5 @@
 use chrono::{Datelike, NaiveDate, NaiveDateTime, Timelike};
-use pray_times::{
+use praytimes::{
     types::{Location, Parameters, PraytimesOutput, TuneOffsets},
     Calculator,
 };
