@@ -20,7 +20,7 @@ repos:
     hooks:
       - id: test
         name: test
-        entry: cargo test --
+        entry: cargo test --features serde --
         language: system
         files: "rs"
         always_run: true
