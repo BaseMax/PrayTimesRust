@@ -11,7 +11,7 @@ pub struct Calculator {
 }
 
 impl Calculator {
-    /// calculate the prayertimes in a given location and a given date
+    /// Calculate the prayertimes in a given location and a given date
     pub fn calculate(&self, location: &Location, date: &NaiveDate) -> PraytimesOutput {
         let calculator = internal_calculator::InternalCalculator {
             date: &date,
@@ -43,8 +43,8 @@ impl Calculator {
             _ => time,
         }
     }
-    /// create new calculator based on input parameters ( can be grabbed from praytimes::methods as well or manually used)
-    /// there is also a tuning offsets input so you can specify how the times are get tuned after calculation for precaution
+    /// Create new calculator based on input parameters ( can be grabbed from praytimes::methods as well or manually used)
+    /// There is also a tuning offsets input so you can specify how the times are get tuned after calculation for precaution
     pub fn new(params: Parameters, tuning_offsets: TuneOffsets) -> Self {
         Self {
             params,
