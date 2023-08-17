@@ -59,7 +59,7 @@ impl<'a> InternalCalculator<'a> {
         midnight
     }
     fn asr(&self) -> f64 {
-        self.asr_time(self.params.asr.0, 13.0 / 24.0)
+        self.asr_time(self.params.asr.factor, 13.0 / 24.0)
     }
 
     fn asr_time(&self, factor: f64, time: f64) -> f64 {
@@ -107,14 +107,14 @@ impl<'a> InternalCalculator<'a> {
     fn dhuhr(&self) -> f64 {
         let mid_day = self.mid_day(12.0 / 24.0);
         dbg!(&mid_day);
-        let var_name = mid_day + self.params.dhuhr.0 / 60.0;
+        let var_name = mid_day + self.params.dhuhr.minutes / 60.0;
         dbg!(&var_name);
         var_name
     }
 
     pub fn imsak(&self) -> f64 {
         match self.params.imsak {
-            types::CalculationUnit::Degrees(Degrees(angle)) => {
+            types::CalculationUnit::Degrees(Degrees { degree: angle }) => {
                 let time = self.mid_day(5.0 / 24.0) - self.sat(5.0 / 24.0, angle);
                 let base = self.sunrise();
                 if self.high_lat_adjustment_needed(time, base, angle) {
@@ -123,15 +123,15 @@ impl<'a> InternalCalculator<'a> {
                     time
                 }
             }
-            types::CalculationUnit::Minutes(Minutes(minutes)) => self.fajr() - minutes / 60.0,
+            types::CalculationUnit::Minutes(Minutes { minutes }) => self.fajr() - minutes / 60.0,
         }
     }
     pub fn maghrib(&self) -> f64 {
         let base = self.sunset();
 
         match self.params.maghrib {
-            CalculationUnit::Minutes(Minutes(minutes)) => base + minutes / 60.0,
-            CalculationUnit::Degrees(Degrees(angle)) => {
+            CalculationUnit::Minutes(Minutes { minutes }) => base + minutes / 60.0,
+            CalculationUnit::Degrees(Degrees { degree: angle }) => {
                 let time = self.mid_day(18.0 / 24.0) + self.sat(18.0 / 24.0, angle);
                 {
                     let ref this = self;
@@ -146,8 +146,8 @@ impl<'a> InternalCalculator<'a> {
     }
     pub fn isha(&self) -> f64 {
         match self.params.isha {
-            CalculationUnit::Minutes(Minutes(minutes)) => self.maghrib() + minutes / 60.0,
-            CalculationUnit::Degrees(Degrees(angle)) => {
+            CalculationUnit::Minutes(Minutes { minutes }) => self.maghrib() + minutes / 60.0,
+            CalculationUnit::Degrees(Degrees { degree: angle }) => {
                 let time = self.mid_day(18.0 / 24.0) + self.sat(18.0 / 24.0, angle);
                 if self.high_lat_adjustment_needed(time, self.sunset(), angle) {
                     self.sunset() + self.night_portion(angle)
@@ -158,7 +158,7 @@ impl<'a> InternalCalculator<'a> {
         }
     }
     pub fn fajr(&self) -> f64 {
-        let angle = self.params.fajr.0;
+        let angle = self.params.fajr.degree;
         let time = self.mid_day(5.0 / 24.0) - self.sat(5.0 / 24.0, angle);
         dbg!(time);
         if self.high_lat_adjustment_needed(time, self.sunrise(), angle) {

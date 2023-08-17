@@ -1,11 +1,16 @@
 use chrono::NaiveDateTime;
 
+#[cfg(feature = "serde")]
+use serde::{Deserialize, Serialize};
+
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Debug, Clone, Copy, Eq, PartialEq)]
 pub enum MidnightMethod {
     Standard,
     Jafari,
 }
 
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Debug, Clone, Copy, Eq, PartialEq)]
 pub enum HighLatsMethod {
     None,
@@ -14,6 +19,7 @@ pub enum HighLatsMethod {
     AngleBased,
 }
 
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Debug, Clone, Copy, Eq, PartialEq)]
 pub enum Format {
     H24,   // 24-hour
@@ -22,21 +28,36 @@ pub enum Format {
     Float, // Floating point number
 }
 
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Debug, Clone, Copy, PartialEq)]
-pub struct Degrees(pub f64);
+pub struct Degrees {
+    pub degree: f64,
+}
 
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Debug, Clone, Copy, PartialEq)]
-pub struct Minutes(pub f64);
+pub struct Minutes {
+    pub minutes: f64,
+}
 
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Debug, Clone, Copy, PartialEq)]
-pub struct AsrFactor(pub f64);
+pub struct AsrFactor {
+    pub factor: f64,
+}
 
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", serde(untagged))]
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub enum CalculationUnit {
+    #[cfg_attr(feature = "serde", serde(rename = "degree"))]
     Degrees(Degrees),
+
+    #[cfg_attr(feature = "serde", serde(rename = "minutes"))]
     Minutes(Minutes),
 }
 
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Debug, Clone, PartialEq)]
 pub struct Parameters {
     // sun angle below the horizon or minutes before fajr
@@ -61,17 +82,20 @@ pub struct Parameters {
     pub midnight: MidnightMethod,
 
     // adjustment method for higher latitudes
+    #[cfg_attr(feature = "serde", serde(rename = "highLats"))]
     pub high_latitudes: HighLatsMethod,
 }
-pub struct Praytimes {}
 
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Debug, Default, Clone, PartialEq)]
 pub struct Location {
     pub longitude: f64,
     pub latitude: f64,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub elevation: f64,
 }
 
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Debug, Default, Clone, PartialEq)]
 pub struct PraytimesOutput {
     pub imsak: Option<NaiveDateTime>,
