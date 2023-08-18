@@ -77,3 +77,24 @@ pub const SHIA_ITHNA_ASHARI_LEVA_INSTITUTE_QUM: Parameters = Parameters {
     midnight: MidnightMethod::Jafari,
     maghrib: CalculationUnit::Degrees(Degrees { degree: 4.0 }),
 };
+
+pub fn get_method_by_name(name: &str) -> Option<Parameters> {
+    match name {
+        "MUSLIM_WORLD_LEAGUE" | "MWL" => Some(MUSLIM_WORLD_LEAGUE),
+        "ISLAMIC_SOCIETY_OF_NORTH_AMERICA" | "ISNA" => Some(ISLAMIC_SOCIETY_OF_NORTH_AMERICA),
+        "EGYPTIAN_GENERAL_AUTHORITY_OF_SURVEY" | "Egypt" => {
+            Some(EGYPTIAN_GENERAL_AUTHORITY_OF_SURVEY)
+        }
+        "UMM_AL_QURA_UNIVERSITY_MAKKAH" | "Makkah" => Some(UMM_AL_QURA_UNIVERSITY_MAKKAH),
+        "UNIVERSITY_OF_ISLAMIC_SCIENCES_KARACHI" | "Karachi" => {
+            Some(UNIVERSITY_OF_ISLAMIC_SCIENCES_KARACHI)
+        }
+        "INSTITUTE_OF_GEOPHYSICS_UNIVERSITY_OF_TEHRAN" | "Tehran" => {
+            Some(INSTITUTE_OF_GEOPHYSICS_UNIVERSITY_OF_TEHRAN)
+        }
+        "SHIA_ITHNA_ASHARI_LEVA_INSTITUTE_QUM" | "Jafari" => {
+            Some(SHIA_ITHNA_ASHARI_LEVA_INSTITUTE_QUM)
+        }
+        _ => None,
+    }
+}

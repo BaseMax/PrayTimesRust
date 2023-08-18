@@ -1,0 +1,21 @@
+[package]
+name = "praytimes"
+version = "1.0.0"
+edition = "2021"
+authors = ["Max Bas MaxBaseCode@Gmail.Com","Ehsan ehsan2003.2003.382@gmail.com"]
+
+[dependencies]
+chrono = "0.4.26"
+serde = { version = "1.0", optional = true ,features=["derive"]}
+
+[dev-dependencies]
+serde_json = "1.0.104"
+
+[features]
+serde = ["dep:serde","chrono/serde"]
+
+[[test]]
+name = "tests"
+path = "./tests/match.rs"
+test = true
+required-features = ["serde"]
