@@ -17,14 +17,44 @@ be useful, but WITHOUT ANY WARRANTY.
 
 This program is distributed in the hope that it will
 be useful, but WITHOUT ANY WARRANTY.
+## Installation
 
-## projects
- - [praytimes](./lib/praytimes) - praytime calculator library
- - [praytimes-cli](./bin/praytimes-cli/) - praytime calculator cli with clap
+```
+cargo add praytimes
+```
+
+## Example
+
+```rs
+let calculator = &Calculator::new(
+    methods::ISLAMIC_SOCIETY_OF_NORTH_AMERICA, // calculation method or parameters
+    TuneOffsets {
+        fajr: Some(7.0), // time for precaution
+        ..Default::default()
+    },
+);
+let output: PraytimesOutput = calculator
+.calculate(
+    &Location {
+        longitude: 43.0,
+        latitude: 30.0,
+        elevation: 0.0, // elevation of that point in meters
+    },
+    &NaiveDate::from_ymd_opt(2022, 11, 11),
+);
+```
+
+## Docs
+
+see [lib.rs docs](https://lib.rs/praytimes)
+
+
 ## Credits
 
 PrayTimes.js is based on [PrayTimes](http://praytimes.org). Cities dataset from
 [countries-states-cities-database](https://github.com/dr5hn/countries-states-cities-database).
+
+Based on javascript refactor from [time-pray](https://github.com/BaseMax/TimePrayTS)
 
 ## License
 
