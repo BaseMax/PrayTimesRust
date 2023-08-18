@@ -8,5 +8,7 @@ authors = ["Max Bas MaxBaseCode@Gmail.Com","Ehsan ehsan2003.2003.382@gmail.com"]
 
 [dependencies]
 chrono = "0.4.26"
-clap = { version = "4.3.22", features = ["derive"] }
+clap = { version = "4.3.22", features = ["derive","color"] }
 praytimes = { path = "../../lib/praytimes"}
+serde = { version = "1.0.183", features = ["derive"] }
+serde_json = "1.0.105"

@@ -31,7 +31,7 @@ impl<'a> InternalCalculator<'a> {
             midnight: self.datetime_from_hours(self.midnight()),
         }
     }
-    
+
     pub(crate) fn midnight(&self) -> f64 {
         let sunset = self.sunset();
         let sunrise = self.sunrise();
@@ -42,7 +42,7 @@ impl<'a> InternalCalculator<'a> {
 
         midnight
     }
-    
+
     pub(crate) fn asr(&self) -> f64 {
         self.asr_time(self.params.asr.factor, 13.0 / 24.0)
     }
@@ -52,7 +52,7 @@ impl<'a> InternalCalculator<'a> {
         let angle = -d_math::arccot(factor + d_math::tan((self.location.latitude - decl).abs()));
         self.mid_day(time) + self.sat(time, angle)
     }
-    
+
     pub fn sat(&self, time: f64, angle: f64) -> f64 {
         let decl = sun_position(self.julian_date + time).declination;
 
@@ -68,7 +68,7 @@ impl<'a> InternalCalculator<'a> {
         let time = self.mid_day(6.0 / 24.0) - self.sat(6.0 / 24.0, angle);
         time
     }
-    
+
     pub fn rise_set_angle(&self) -> f64 {
         let angle = 0.0347 * self.location.elevation.sqrt();
 
@@ -82,7 +82,7 @@ impl<'a> InternalCalculator<'a> {
         let time = self.mid_day(18.0 / 24.0) + self.sat(18.0 / 24.0, angle);
         time
     }
-    
+
     pub(crate) fn mid_day(&self, time: f64) -> f64 {
         let sun_pos = sun_position(self.julian_date + time);
 
@@ -92,13 +92,13 @@ impl<'a> InternalCalculator<'a> {
 
         noon
     }
-    
+
     pub(crate) fn dhuhr(&self) -> f64 {
         let mid_day = self.mid_day(12.0 / 24.0);
         let var_name = mid_day + self.params.dhuhr.minutes / 60.0;
         var_name
     }
-    
+
     pub fn imsak(&self) -> f64 {
         match self.params.imsak {
             CalculationUnit::Degrees(Degrees { degree: angle }) => {
@@ -113,7 +113,7 @@ impl<'a> InternalCalculator<'a> {
             CalculationUnit::Minutes(Minutes { minutes }) => self.fajr() - minutes / 60.0,
         }
     }
-    
+
     pub fn maghrib(&self) -> f64 {
         let base = self.sunset();
 
@@ -132,7 +132,7 @@ impl<'a> InternalCalculator<'a> {
             }
         }
     }
-    
+
     pub fn isha(&self) -> f64 {
         match self.params.isha {
             CalculationUnit::Minutes(Minutes { minutes }) => self.maghrib() + minutes / 60.0,
@@ -146,7 +146,7 @@ impl<'a> InternalCalculator<'a> {
             }
         }
     }
-    
+
     pub fn fajr(&self) -> f64 {
         let angle = self.params.fajr.degree;
         let time = self.mid_day(5.0 / 24.0) - self.sat(5.0 / 24.0, angle);
@@ -156,14 +156,14 @@ impl<'a> InternalCalculator<'a> {
             time
         }
     }
-    
+
     pub(crate) fn high_lat_adjustment_needed(&self, time: f64, base: f64, angle: f64) -> bool {
         let portion = self.night_portion(angle);
         let time_diff = (time - base).abs();
 
         time.is_nan() || (self.params.high_latitudes != HighLatsMethod::None && time_diff > portion)
     }
-    
+
     pub(crate) fn night_portion(&self, angle: f64) -> f64 {
         let night = self.night_time();
         let portion = match self.params.high_latitudes {
@@ -175,11 +175,11 @@ impl<'a> InternalCalculator<'a> {
 
         portion * night
     }
-    
+
     pub(crate) fn night_time(&self) -> f64 {
         Self::time_difference(self.sunset(), self.sunrise())
     }
-    
+
     pub(crate) fn datetime_from_hours(&self, hours: f64) -> Option<NaiveDateTime> {
         if hours.is_nan() {
             return None;
@@ -193,7 +193,7 @@ impl<'a> InternalCalculator<'a> {
             + (hours * 3600.0 * 1000.0) as i64;
         Some(NaiveDateTime::from_timestamp_millis(time).unwrap())
     }
-    
+
     pub(crate) fn time_difference(time1: f64, time2: f64) -> f64 {
         let difference = time2 - time1;
 
