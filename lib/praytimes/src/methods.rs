@@ -1,6 +1,7 @@
 use crate::types::{
     AsrFactor, CalculationUnit, Degrees, HighLatsMethod, MidnightMethod, Minutes, Parameters,
 };
+
 pub const MUSLIM_WORLD_LEAGUE: Parameters = Parameters {
     imsak: CalculationUnit::Minutes(Minutes { minutes: 10.0 }),
     dhuhr: Minutes { minutes: 0.0 },
