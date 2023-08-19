@@ -1,8 +1,8 @@
-# praytimes
+# Time Pray Rust
 
-Prayer Times Calculator for Rust Based on [Praytimes.org](https://praytimes.org)
+TimePrayRust is a powerful and versatile Muslim prayer time calculator implemented in Rust. This project is built upon the PrayTimes.org library, a widely recognized resource for accurate prayer time calculations. Whether you're developing a website, application, or any other digital platform, TimePrayRust offers a seamless way to integrate accurate prayer time calculations for Muslims worldwide.
 
-Dont forget to give [Praytimes.org](https://praytimes.org) based on their license :
+> Prayer Times Calculator for Rust Based on [Praytimes.org](https://praytimes.org). Dont forget to give [Praytimes.org](https://praytimes.org) based on their license :
 
 ```txt
 TERMS OF USE:
