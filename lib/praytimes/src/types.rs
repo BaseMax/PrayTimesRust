@@ -1,4 +1,6 @@
-use chrono::NaiveDateTime;
+use std::fmt::Display;
+
+use chrono::{NaiveDateTime, TimeZone};
 
 #[cfg(feature = "serde")]
 use serde::{Deserialize, Serialize};
@@ -160,6 +162,53 @@ pub struct PraytimesOutput {
     /// Midnight
     /// calculation based on sunset to sunrise ( or fajr in some methods ).
     pub midnight: Option<NaiveDateTime>,
+}
+/// Formatted times
+/// you can easily use [`PraytimesOutput`]'s format_time method to format the PraytimesOutput into a
+/// FormattedTimes for displaying
+/// you can also use serde feature to convert it to json without any additional steps
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[derive(Debug, Clone)]
+pub struct FormattedTimes {
+    pub imsak: Option<String>,
+    pub fajr: Option<String>,
+    pub sunrise: Option<String>,
+    pub dhuhr: Option<String>,
+    pub asr: Option<String>,
+    pub sunset: Option<String>,
+    pub maghrib: Option<String>,
+    pub isha: Option<String>,
+    pub midnight: Option<String>,
+}
+impl PraytimesOutput {
+    /// format times with a given format ( see [chrono's format docs for more information ](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) ) and in a given timezone
+    pub fn format_times<TZ>(&self, format: &str, zone: &TZ) -> FormattedTimes
+    where
+        TZ: TimeZone,
+        TZ::Offset: Display,
+    {
+        FormattedTimes {
+            imsak: self.imsak.map(|d| Self::format_time(d, format, zone)),
+            fajr: self.fajr.map(|d| Self::format_time(d, format, zone)),
+            sunrise: self.sunrise.map(|d| Self::format_time(d, format, zone)),
+            dhuhr: self.dhuhr.map(|d| Self::format_time(d, format, zone)),
+            asr: self.asr.map(|d| Self::format_time(d, format, zone)),
+            sunset: self.sunset.map(|d| Self::format_time(d, format, zone)),
+            maghrib: self.maghrib.map(|d| Self::format_time(d, format, zone)),
+            isha: self.isha.map(|d| Self::format_time(d, format, zone)),
+            midnight: self.midnight.map(|d| Self::format_time(d, format, zone)),
+        }
+    }
+
+    fn format_time<TZ>(time: chrono::NaiveDateTime, format: &str, tz: &TZ) -> String
+    where
+        TZ: TimeZone,
+        TZ::Offset: Display,
+    {
+        let local = tz.from_utc_datetime(&time);
+        let formatted = format!("{}", local.format(format));
+        formatted
+    }
 }
 
 /// tuning  offsets in minutes for precaution
