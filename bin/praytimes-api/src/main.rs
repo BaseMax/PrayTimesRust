@@ -1,14 +1,30 @@
+use axum::{routing::post, Router};
+use praytimes_api::calculate_handler;
+
+use std::net::SocketAddr;
+use tower_http::trace::{self, TraceLayer};
+use tracing::Level;
+
 #[tokio::main]
 async fn main() {
-    // This is running on a core thread.
+    tracing_subscriber::fmt()
+        .with_target(false)
+        .compact()
+        .init();
 
-    let blocking_task = tokio::task::spawn_blocking(|| {
-        // This is running on a blocking thread.
-        // Blocking here is ok.
-    });
+    let app = Router::new()
+        .route("/calculate", post(calculate_handler))
+        .layer(
+            TraceLayer::new_for_http()
+                .make_span_with(trace::DefaultMakeSpan::new().level(Level::INFO))
+                .on_response(trace::DefaultOnResponse::new().level(Level::INFO)),
+        );
 
-    // We can wait for the blocking task like this:
-    // If the blocking task panics, the unwrap below will propagate the
-    // panic.
-    blocking_task.await.unwrap();
+    let addr: SocketAddr = "0.0.0.0:3000".parse().unwrap();
+    tracing::info!("listening on {}", addr);
+
+    axum::Server::bind(&addr)
+        .serve(app.into_make_service())
+        .await
+        .unwrap();
 }
