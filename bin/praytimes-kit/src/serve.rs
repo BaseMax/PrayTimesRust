@@ -1,12 +1,20 @@
-use axum::{routing::post, Router};
-use praytimes_api::calculate_handler;
-
+use axum::routing::post;
+use axum::{Json, Router};
 use std::net::SocketAddr;
-use tower_http::trace::{self, TraceLayer};
 use tracing::Level;
 
-#[tokio::main]
-async fn main() {
+use praytimes::types::FormattedTimes;
+use tower_http::trace;
+
+use tower_http::trace::TraceLayer;
+
+use crate::base::{calculate, CalculationInputs};
+
+pub async fn calculate_handler(Json(payload): Json<CalculationInputs>) -> Json<FormattedTimes> {
+    calculate(payload).into()
+}
+
+pub async fn serve() {
     tracing_subscriber::fmt()
         .with_target(false)
         .compact()

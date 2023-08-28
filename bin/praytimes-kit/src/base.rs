@@ -1,43 +1,47 @@
-use axum::Json;
 use chrono::{FixedOffset, Local, NaiveDate, Utc};
+use clap::ValueEnum;
 use praytimes::{
-    methods,
-    types::{
-        AsrFactor, CalculationUnit, Degrees, FormattedTimes, HighLatsMethod, Location,
-        MidnightMethod, Minutes, Parameters, TuneOffsets,
-    },
+    types::{FormattedTimes, Location, TuneOffsets},
     Calculator,
 };
-use serde::{Deserialize, Serialize};
-
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct CalculationInputs {
     #[serde(default = "default_format")]
-    format: String,
-    date: NaiveDate,
-    location: Location,
-    parameters: CustomizableParams,
-    tuning: Option<TuneOffsets>,
+    pub format: String,
+    pub date: NaiveDate,
+    pub location: Location,
+    pub parameters: CustomizableParams,
+    pub tuning: Option<TuneOffsets>,
     #[serde(default = "default_timezone")]
-    zone: Zone,
+    pub zone: Zone,
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
 #[serde(rename_all = "lowercase")]
-enum Zone {
+pub enum Zone {
     Local,
     Utc,
     Fixed(i32),
 }
-fn default_timezone() -> Zone {
+
+pub(crate) fn default_timezone() -> Zone {
     Zone::Local
 }
-fn default_format() -> String {
+
+pub(crate) fn default_format() -> String {
     "%+".into()
 }
+use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
-pub(crate) enum SelectedMethod {
+use praytimes::{
+    methods,
+    types::{
+        AsrFactor, CalculationUnit, Degrees, HighLatsMethod, MidnightMethod, Minutes, Parameters,
+    },
+};
+
+#[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, ValueEnum)]
+pub enum SelectedMethod {
     MWL,
     ISNA,
     Egypt,
@@ -60,15 +64,17 @@ impl SelectedMethod {
         }
     }
 }
+
 #[derive(Debug, Clone, Deserialize, Serialize)]
 #[serde(untagged)]
-enum CustomizableParams {
+pub enum CustomizableParams {
     Full(Parameters),
     MethodAndExtra {
         method: SelectedMethod,
         extra: Option<PartialParameters>,
     },
 }
+
 impl CustomizableParams {
     pub fn get_params(self) -> Parameters {
         match self {
@@ -96,6 +102,7 @@ impl CustomizableParams {
         }
     }
 }
+
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct PartialParameters {
     pub imsak: Option<CalculationUnit>,
@@ -108,7 +115,7 @@ pub struct PartialParameters {
     #[serde(rename = "highLats")]
     pub high_latitudes: Option<HighLatsMethod>,
 }
-pub async fn calculate_handler(Json(payload): Json<CalculationInputs>) -> Json<FormattedTimes> {
+pub fn calculate(payload: CalculationInputs) -> FormattedTimes {
     let result = Calculator::new(
         payload.parameters.get_params(),
         payload.tuning.unwrap_or_default(),
@@ -120,5 +127,4 @@ pub async fn calculate_handler(Json(payload): Json<CalculationInputs>) -> Json<F
         Zone::Utc => result.format_times(&payload.format, &Utc),
         Zone::Fixed(o) => result.format_times(&payload.format, &FixedOffset::east_opt(o).unwrap()),
     }
-    .into()
 }

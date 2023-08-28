@@ -1,8 +1,7 @@
 [workspace]
 members=[
   "lib/praytimes",
-  "bin/praytimes-cli",
-  "bin/praytimes-api"
+  "bin/praytimes-kit",
 ]
 resolver = "2"
 
