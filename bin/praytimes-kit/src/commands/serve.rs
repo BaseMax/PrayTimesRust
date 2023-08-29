@@ -1,3 +1,4 @@
+use axum::http::StatusCode;
 use axum::routing::post;
 use axum::{Json, Router};
 use std::net::{Ipv4Addr, SocketAddr, SocketAddrV4};
@@ -14,11 +15,32 @@ use tower_http::trace;
 use tower_http::trace::TraceLayer;
 
 use serde::{Deserialize, Serialize};
+use serde_json::{json, Value};
 
 use crate::base::{CustomizableParams, Zone};
 
-async fn calculate_handler(Json(payload): Json<CalculationInputs>) -> Json<FormattedTimes> {
-    calculate(payload).into()
+async fn calculate_handler(
+    Json(payload): Json<CalculationInputs>,
+) -> Result<Json<FormattedTimes>, (StatusCode, Json<Value>)> {
+    let result = Calculator::new(
+        payload.parameters.get_params(),
+        payload.tuning.unwrap_or_default(),
+    )
+    .calculate(&payload.location, &payload.date);
+
+    let formatted = match payload.zone {
+        Zone::Local => result.format_times(&payload.format, &Local),
+        Zone::Utc => result.format_times(&payload.format, &Utc),
+        Zone::Fixed(o) => result.format_times(
+            &payload.format,
+            &FixedOffset::east_opt(o).ok_or((
+                StatusCode::BAD_REQUEST,
+                Json(json!({"error":"invalid time zone"})),
+            ))?,
+        ),
+    };
+
+    Ok(Json(formatted))
 }
 
 pub async fn serve() {
@@ -70,18 +92,4 @@ pub struct CalculationInputs {
     pub tuning: Option<TuneOffsets>,
     #[serde(default = "default_timezone")]
     pub zone: Zone,
-}
-
-pub fn calculate(payload: CalculationInputs) -> FormattedTimes {
-    let result = Calculator::new(
-        payload.parameters.get_params(),
-        payload.tuning.unwrap_or_default(),
-    )
-    .calculate(&payload.location, &payload.date);
-
-    match payload.zone {
-        Zone::Local => result.format_times(&payload.format, &Local),
-        Zone::Utc => result.format_times(&payload.format, &Utc),
-        Zone::Fixed(o) => result.format_times(&payload.format, &FixedOffset::east_opt(o).unwrap()),
-    }
 }
