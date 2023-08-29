@@ -1,6 +1,6 @@
 use axum::routing::post;
 use axum::{Json, Router};
-use std::net::SocketAddr;
+use std::net::{Ipv4Addr, SocketAddr, SocketAddrV4};
 use tracing::Level;
 
 use chrono::{FixedOffset, Local, NaiveDate, Utc};
@@ -35,7 +35,16 @@ pub async fn serve() {
                 .on_response(trace::DefaultOnResponse::new().level(Level::INFO)),
         );
 
-    let addr: SocketAddr = "0.0.0.0:3000".parse().unwrap();
+    let host: Ipv4Addr = std::env::var("HOST")
+        .unwrap_or("127.0.0.1".into())
+        .parse()
+        .expect("Invalid host");
+    let port: u16 = std::env::var("PORT")
+        .unwrap_or("3535".into())
+        .parse()
+        .expect("Invalid port");
+    let addr: SocketAddr = SocketAddr::V4(SocketAddrV4::new(host, port));
+
     tracing::info!("listening on {}", addr);
 
     axum::Server::bind(&addr)
