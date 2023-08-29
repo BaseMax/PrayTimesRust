@@ -1,6 +1,10 @@
-use praytimes_kit::run_app;
+use std::error::Error;
+
+use clap::Parser;
 
 #[tokio::main]
-async fn main() {
-    run_app().await;
+async fn main() -> Result<(), Box<dyn Error>> {
+    let args = praytimes_kit::Args::parse();
+    praytimes_kit::run(args).await;
+    Ok(())
 }

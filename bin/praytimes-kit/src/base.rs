@@ -1,20 +1,5 @@
-use chrono::{FixedOffset, Local, NaiveDate, Utc};
 use clap::ValueEnum;
-use praytimes::{
-    types::{FormattedTimes, Location, TuneOffsets},
-    Calculator,
-};
-#[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct CalculationInputs {
-    #[serde(default = "default_format")]
-    pub format: String,
-    pub date: NaiveDate,
-    pub location: Location,
-    pub parameters: CustomizableParams,
-    pub tuning: Option<TuneOffsets>,
-    #[serde(default = "default_timezone")]
-    pub zone: Zone,
-}
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
 #[serde(rename_all = "lowercase")]
@@ -23,15 +8,6 @@ pub enum Zone {
     Utc,
     Fixed(i32),
 }
-
-pub(crate) fn default_timezone() -> Zone {
-    Zone::Local
-}
-
-pub(crate) fn default_format() -> String {
-    "%+".into()
-}
-use serde::{Deserialize, Serialize};
 
 use praytimes::{
     methods,
@@ -114,17 +90,4 @@ pub struct PartialParameters {
     pub midnight: Option<MidnightMethod>,
     #[serde(rename = "highLats")]
     pub high_latitudes: Option<HighLatsMethod>,
-}
-pub fn calculate(payload: CalculationInputs) -> FormattedTimes {
-    let result = Calculator::new(
-        payload.parameters.get_params(),
-        payload.tuning.unwrap_or_default(),
-    )
-    .calculate(&payload.location, &payload.date);
-
-    match payload.zone {
-        Zone::Local => result.format_times(&payload.format, &Local),
-        Zone::Utc => result.format_times(&payload.format, &Utc),
-        Zone::Fixed(o) => result.format_times(&payload.format, &FixedOffset::east_opt(o).unwrap()),
-    }
 }

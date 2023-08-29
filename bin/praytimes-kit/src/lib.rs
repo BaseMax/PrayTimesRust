@@ -1,18 +1,23 @@
-use clap::Parser;
-use cli::run_cli;
-use command::MainArgs;
-use serve::serve;
-
 mod base;
-mod cli;
-pub mod command;
-mod serve;
+mod commands;
+use clap::{Parser, Subcommand};
+#[derive(Parser, Debug, Clone)]
+pub struct Args {
+    #[command(subcommand)]
+    command: SubCommands,
+}
 
-pub async fn run_app() {
-    let args = MainArgs::parse();
+#[derive(Subcommand, Debug, Clone)]
+pub enum SubCommands {
+    Serve,
+    Calculate(commands::calculate::Args),
+    Daemon(commands::daemon::Args),
+}
 
+pub async fn run(args: Args) {
     match args.command {
-        command::MainCommand::Serve => serve().await,
-        command::MainCommand::Calculate(c) => run_cli(c),
-    };
+        SubCommands::Serve => commands::serve::serve().await,
+        SubCommands::Calculate(c) => commands::calculate::run(c),
+        SubCommands::Daemon(d) => commands::daemon::run(d),
+    }
 }
