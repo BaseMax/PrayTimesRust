@@ -18,6 +18,6 @@ pub async fn run(args: Args) {
     match args.command {
         SubCommands::Serve => commands::serve::serve().await,
         SubCommands::Calculate(c) => commands::calculate::run(c),
-        SubCommands::Daemon(d) => commands::daemon::run(d),
+        SubCommands::Daemon(d) => commands::daemon::run(d).await,
     }
 }
