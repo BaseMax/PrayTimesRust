@@ -17,3 +17,5 @@ tower-http = { version = "0.3.4", features = ["trace"] }
 chrono = "0.4.26"
 
 clap = { version = "4.3.22", features = ["derive","color"] }
+log = "0.4.20"
+env_logger = "0.10.0"
