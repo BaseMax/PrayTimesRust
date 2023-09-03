@@ -188,29 +188,28 @@ impl PraytimesOutput {
         TZ::Offset: Display,
     {
         FormattedTimes {
-            imsak: self.imsak.map(|d| Self::format_time(d, format, zone)),
-            fajr: self.fajr.map(|d| Self::format_time(d, format, zone)),
-            sunrise: self.sunrise.map(|d| Self::format_time(d, format, zone)),
-            dhuhr: self.dhuhr.map(|d| Self::format_time(d, format, zone)),
-            asr: self.asr.map(|d| Self::format_time(d, format, zone)),
-            sunset: self.sunset.map(|d| Self::format_time(d, format, zone)),
-            maghrib: self.maghrib.map(|d| Self::format_time(d, format, zone)),
-            isha: self.isha.map(|d| Self::format_time(d, format, zone)),
-            midnight: self.midnight.map(|d| Self::format_time(d, format, zone)),
+            imsak: self.imsak.map(|d| format_time(d, format, zone)),
+            fajr: self.fajr.map(|d| format_time(d, format, zone)),
+            sunrise: self.sunrise.map(|d| format_time(d, format, zone)),
+            dhuhr: self.dhuhr.map(|d| format_time(d, format, zone)),
+            asr: self.asr.map(|d| format_time(d, format, zone)),
+            sunset: self.sunset.map(|d| format_time(d, format, zone)),
+            maghrib: self.maghrib.map(|d| format_time(d, format, zone)),
+            isha: self.isha.map(|d| format_time(d, format, zone)),
+            midnight: self.midnight.map(|d| format_time(d, format, zone)),
         }
-    }
-
-    fn format_time<TZ>(time: chrono::NaiveDateTime, format: &str, tz: &TZ) -> String
-    where
-        TZ: TimeZone,
-        TZ::Offset: Display,
-    {
-        let local = tz.from_utc_datetime(&time);
-        let formatted = format!("{}", local.format(format));
-        formatted
     }
 }
 
+pub fn format_time<TZ>(time: chrono::NaiveDateTime, format: &str, tz: &TZ) -> String
+where
+    TZ: TimeZone,
+    TZ::Offset: Display,
+{
+    let local = tz.from_utc_datetime(&time);
+    let formatted = format!("{}", local.format(format));
+    formatted
+}
 /// tuning  offsets in minutes for precaution
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Debug, Clone, PartialEq, Default)]

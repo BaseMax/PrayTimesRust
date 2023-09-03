@@ -4,7 +4,7 @@ use crate::base::CustomizableParams;
 use chrono::{Datelike, Duration, Local, NaiveDate, NaiveDateTime, Utc};
 use clap::Parser;
 use praytimes::{
-    types::{Location, PraytimesOutput, TuneOffsets},
+    types::{format_time, Location, PraytimesOutput, TuneOffsets},
     Calculator,
 };
 use serde::{Deserialize, Serialize};
@@ -111,7 +111,7 @@ impl Daemon {
                     .arg("-c")
                     .env("TYPE", format!("{:?}", p))
                     .env("DIFF", format!("{}", command.time_diff))
-                    .env("TIME", format!("{}", date_time.format(&format)))
+                    .env("TIME", format!("{}", format_time(date_time, "%T", &Local)))
                     .arg(&command.cmd)
                     .spawn();
                 match child {
