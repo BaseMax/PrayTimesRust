@@ -4,6 +4,7 @@ use clap::Parser;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
+    env_logger::init();
     let args = praytimes_kit::Args::parse();
     praytimes_kit::run(args).await;
     Ok(())

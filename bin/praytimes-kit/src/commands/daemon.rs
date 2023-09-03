@@ -3,6 +3,7 @@ use std::{ops::Add, path::PathBuf, process::exit};
 use crate::base::CustomizableParams;
 use chrono::{Datelike, Duration, Local, NaiveDate, NaiveDateTime, Utc};
 use clap::Parser;
+use log::{error, info};
 use praytimes::{
     types::{format_time, Location, PraytimesOutput, TuneOffsets},
     Calculator,
@@ -47,12 +48,11 @@ struct PraytimeCmd {
 }
 
 pub async fn run(args: Args) {
-    dbg!(&args);
     let config = std::fs::read(&args.config).expect("could not read config file");
     let config: Config = serde_json::from_slice(&config).expect("invalid json file");
 
     if config.commands.is_empty() {
-        eprintln!("no commands");
+        info!("no commands");
         exit(1);
     }
 
@@ -101,7 +101,7 @@ impl Daemon {
             let dur = date_time.signed_duration_since(Utc::now().naive_utc());
             let format = self.format.clone();
             tokio::spawn(async move {
-                eprintln!(
+                info!(
                     "waiting for {:?} for duration of : '{}' to run command :\n >>  `{}`\n",
                     command.praytime, dur, command.cmd
                 );
@@ -111,15 +111,18 @@ impl Daemon {
                     .arg("-c")
                     .env("TYPE", format!("{:?}", p))
                     .env("DIFF", format!("{}", command.time_diff))
-                    .env("TIME", format!("{}", format_time(date_time, "%T", &Local)))
+                    .env(
+                        "TIME",
+                        format!("{}", format_time(date_time, &format, &Local)),
+                    )
                     .arg(&command.cmd)
                     .spawn();
                 match child {
                     Ok(mut a) => match a.wait().await {
-                        Ok(_) => println!("successfully ran command for {:?}", command),
-                        Err(_) => todo!(),
+                        Ok(_) => info!("successfully ran command for {:?}", command),
+                        Err(error) => error!("failed to run , {error}"),
                     },
-                    Err(e) => println!("failed to spawn, {e}"),
+                    Err(e) => error!("failed to spawn, {e}"),
                 }
             });
         }
