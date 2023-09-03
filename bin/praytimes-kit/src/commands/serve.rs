@@ -3,6 +3,9 @@ use axum::routing::post;
 use axum::{Json, Router};
 use std::net::{Ipv4Addr, SocketAddr, SocketAddrV4};
 use tracing::Level;
+use tracing_subscriber::prelude::__tracing_subscriber_SubscriberExt;
+use tracing_subscriber::util::SubscriberInitExt;
+use tracing_subscriber::EnvFilter;
 
 use chrono::{FixedOffset, Local, NaiveDate, Utc};
 use praytimes::{
@@ -44,11 +47,10 @@ async fn calculate_handler(
 }
 
 pub async fn serve() {
-    tracing_subscriber::fmt()
-        .with_target(false)
-        .compact()
+    tracing_subscriber::registry()
+        .with(tracing_subscriber::fmt::layer())
+        .with(EnvFilter::from_env("PRAYTIMES_LOG"))
         .init();
-
     let app = Router::new()
         .route("/calculate", post(calculate_handler))
         .layer(
