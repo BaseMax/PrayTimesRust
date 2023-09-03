@@ -12,6 +12,7 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Parser)]
 pub struct Args {
+    /// config path
     config: PathBuf,
 }
 #[derive(Debug, Clone, Serialize, Deserialize)]

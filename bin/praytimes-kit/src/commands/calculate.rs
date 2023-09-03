@@ -13,8 +13,10 @@ use crate::base::CustomizableParams;
 #[derive(Parser, Debug, Clone)]
 #[command(author, version, about, long_about = None)]
 pub struct Args {
+    /// configuration file
     #[arg(short, long)]
     config: PathBuf,
+
     /// date for calculation ( default is today )
     #[arg(short, long,default_value_t = get_today())]
     pub date: NaiveDate,
@@ -23,6 +25,7 @@ pub struct Args {
     #[arg(short, long, default_value = "%H:%M:%S")]
     pub format: String,
 
+    /// whether to output as json format or not
     #[arg(short, long, default_value_t = false)]
     pub json: bool,
 }

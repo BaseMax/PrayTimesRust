@@ -9,8 +9,12 @@ pub struct Args {
 
 #[derive(Subcommand, Debug, Clone)]
 pub enum SubCommands {
+    /// http API for praytime calculation
     Serve,
+    /// simple cli to show praytimes for specific day
     Calculate(commands::calculate::Args),
+
+    /// daemon which helps with notification and similar works on praytimes
     Daemon(commands::daemon::Args),
 }
 
