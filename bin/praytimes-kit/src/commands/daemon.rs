@@ -3,6 +3,7 @@ use std::{ops::Add, path::PathBuf, process::exit};
 use crate::base::CustomizableParams;
 use chrono::{Datelike, Duration, Local, NaiveDate, NaiveDateTime, Utc};
 use clap::Parser;
+use env_logger::Env;
 use log::{error, info};
 use praytimes::{
     types::{format_time, Location, PraytimesOutput, TuneOffsets},
@@ -49,6 +50,12 @@ struct PraytimeCmd {
 }
 
 pub async fn run(args: Args) {
+    let env = Env::new()
+        .filter("PRAYTIMES_LOG")
+        .write_style("PRAYTIMES_LOG_STYLE");
+
+    env_logger::init_from_env(env);
+
     let config = std::fs::read(&args.config).expect("could not read config file");
     let config: Config = serde_json::from_slice(&config).expect("invalid json file");
 
