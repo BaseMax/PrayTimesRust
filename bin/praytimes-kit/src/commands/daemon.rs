@@ -83,7 +83,43 @@ pub async fn run(args: Args) {
         interval.tick().await;
     }
 }
+struct ExecutablePraytime {
+    command: PraytimeCmd,
+    praytime_type: PraytimeType,
+    execution_date: NaiveDateTime,
+}
+impl ExecutablePraytime {
+    fn wait_and_execute(self, format: String) {
+        let dur = self
+            .execution_date
+            .signed_duration_since(Utc::now().naive_utc());
+        tokio::spawn(async move {
+            info!(
+                "waiting for {:?} for duration of : '{}' to run command :\n >>  `{}`\n",
+                self.command.praytime, dur, self.command.cmd
+            );
+            tokio::time::sleep(dur.to_std().unwrap()).await;
 
+            let child = tokio::process::Command::new("sh")
+                .arg("-c")
+                .env("TYPE", format!("{:?}", self.praytime_type))
+                .env("DIFF", format!("{}", self.command.time_diff))
+                .env(
+                    "TIME",
+                    format!("{}", format_time(self.execution_date, &format, &Local)),
+                )
+                .arg(&self.command.cmd)
+                .spawn();
+            match child {
+                Ok(mut a) => match a.wait().await {
+                    Ok(_) => info!("successfully ran command for {:?}", self.command),
+                    Err(error) => error!("failed to run , {error}"),
+                },
+                Err(e) => error!("failed to spawn, {e}"),
+            }
+        });
+    }
+}
 struct Daemon {
     format: String,
     location: Location,
@@ -94,58 +130,30 @@ impl Daemon {
     fn execute_for_day(&self, next_day: NaiveDate) {
         let praytimes = into_vec(self.calculator.calculate(&self.location, &next_day));
         let commands_to_run = self.get_runnable_commands(praytimes);
-        self.wait_and_run(commands_to_run);
-    }
-    fn wait_and_run(&self, commands_to_run: Vec<(PraytimeCmd, PraytimeType, NaiveDateTime)>) {
-        for (command, praytime_type, date_time) in commands_to_run.into_iter() {
-            let dur = date_time.signed_duration_since(Utc::now().naive_utc());
-            let format = self.format.clone();
-            tokio::spawn(async move {
-                info!(
-                    "waiting for {:?} for duration of : '{}' to run command :\n >>  `{}`\n",
-                    command.praytime, dur, command.cmd
-                );
-                tokio::time::sleep(dur.to_std().unwrap()).await;
 
-                let child = tokio::process::Command::new("sh")
-                    .arg("-c")
-                    .env("TYPE", format!("{:?}", praytime_type))
-                    .env("DIFF", format!("{}", command.time_diff))
-                    .env(
-                        "TIME",
-                        format!("{}", format_time(date_time, &format, &Local)),
-                    )
-                    .arg(&command.cmd)
-                    .spawn();
-                match child {
-                    Ok(mut a) => match a.wait().await {
-                        Ok(_) => info!("successfully ran command for {:?}", command),
-                        Err(error) => error!("failed to run , {error}"),
-                    },
-                    Err(e) => error!("failed to spawn, {e}"),
-                }
-            });
+        for cmd in commands_to_run {
+            cmd.wait_and_execute(self.format.clone())
         }
     }
 
     fn get_runnable_commands(
         &self,
         praytimes: Vec<(PraytimeType, NaiveDateTime)>,
-    ) -> Vec<(PraytimeCmd, PraytimeType, NaiveDateTime)> {
+    ) -> Vec<ExecutablePraytime> {
         self.commands
             .iter()
             .map(|command| {
                 praytimes
                     .iter()
                     .filter(|(praytime_type, _)| *praytime_type == command.praytime)
-                    .map(|(praytime_type, praytime_date)| {
-                        (
-                            command.clone(),
-                            praytime_type.clone(),
-                            praytime_date.add(Duration::seconds(command.time_diff as i64)),
-                        )
+                    .map(|(praytime_type, praytime_date)| ExecutablePraytime {
+                        command: command.clone(),
+                        praytime_type: praytime_type.clone(),
+
+                        execution_date: praytime_date
+                            .add(Duration::seconds(command.time_diff as i64)),
                     })
-                    .filter(|(_, _, date_time)| date_time > &Utc::now().naive_utc())
+                    .filter(|p| p.execution_date > Utc::now().naive_utc())
                     .collect::<Vec<_>>()
                     .into_iter()
             })
