@@ -87,6 +87,7 @@ struct ExecutablePraytime {
     command: PraytimeCmd,
     praytime_type: PraytimeType,
     execution_date: NaiveDateTime,
+    datetime: NaiveDateTime,
 }
 impl ExecutablePraytime {
     fn wait_and_execute(self, format: String) {
@@ -106,7 +107,7 @@ impl ExecutablePraytime {
                 .env("DIFF", format!("{}", self.command.time_diff))
                 .env(
                     "TIME",
-                    format!("{}", format_time(self.execution_date, &format, &Local)),
+                    format!("{}", format_time(self.datetime, &format, &Local)),
                 )
                 .arg(&self.command.cmd)
                 .spawn();
@@ -146,12 +147,11 @@ impl Daemon {
                 praytimes
                     .iter()
                     .filter(|(praytime_type, _)| *praytime_type == command.praytime)
-                    .map(|(praytime_type, praytime_date)| ExecutablePraytime {
+                    .map(|(praytime_type, datetime)| ExecutablePraytime {
                         command: command.clone(),
                         praytime_type: praytime_type.clone(),
-
-                        execution_date: praytime_date
-                            .add(Duration::seconds(command.time_diff as i64)),
+                        datetime: *datetime,
+                        execution_date: datetime.add(Duration::seconds(command.time_diff as i64)),
                     })
                     .filter(|p| p.execution_date > Utc::now().naive_utc())
                     .collect::<Vec<_>>()
