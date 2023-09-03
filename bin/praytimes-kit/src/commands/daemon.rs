@@ -29,7 +29,7 @@ fn default_format() -> String {
 
 #[derive(Debug, Copy, Eq, PartialEq, PartialOrd, Ord, Hash, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "lowercase")]
-enum Praytime {
+enum PraytimeType {
     Imsak,
     Fajr,
     Sunrise,
@@ -44,7 +44,7 @@ enum Praytime {
 struct PraytimeCmd {
     time_diff: i32,
     cmd: String,
-    praytime: Praytime,
+    praytime: PraytimeType,
 }
 
 pub async fn run(args: Args) {
@@ -58,7 +58,7 @@ pub async fn run(args: Args) {
 
     let calculator = Calculator::new(
         config.parameters.get_params(),
-        config.tune.clone().unwrap_or_default(),
+        config.tune.unwrap_or_default(),
     );
 
     let daemon = Daemon {
@@ -96,8 +96,8 @@ impl Daemon {
         let commands_to_run = self.get_runnable_commands(praytimes);
         self.wait_and_run(commands_to_run);
     }
-    fn wait_and_run(&self, commands_to_run: Vec<(PraytimeCmd, Praytime, NaiveDateTime)>) {
-        for (command, p, date_time) in commands_to_run.into_iter() {
+    fn wait_and_run(&self, commands_to_run: Vec<(PraytimeCmd, PraytimeType, NaiveDateTime)>) {
+        for (command, praytime_type, date_time) in commands_to_run.into_iter() {
             let dur = date_time.signed_duration_since(Utc::now().naive_utc());
             let format = self.format.clone();
             tokio::spawn(async move {
@@ -109,7 +109,7 @@ impl Daemon {
 
                 let child = tokio::process::Command::new("sh")
                     .arg("-c")
-                    .env("TYPE", format!("{:?}", p))
+                    .env("TYPE", format!("{:?}", praytime_type))
                     .env("DIFF", format!("{}", command.time_diff))
                     .env(
                         "TIME",
@@ -130,34 +130,32 @@ impl Daemon {
 
     fn get_runnable_commands(
         &self,
-        praytimes: Vec<(Praytime, NaiveDateTime)>,
-    ) -> Vec<(PraytimeCmd, Praytime, NaiveDateTime)> {
-        let commands_to_run = self
-            .commands
+        praytimes: Vec<(PraytimeType, NaiveDateTime)>,
+    ) -> Vec<(PraytimeCmd, PraytimeType, NaiveDateTime)> {
+        self.commands
             .iter()
-            .map(|c| {
+            .map(|command| {
                 praytimes
                     .iter()
-                    .filter(|a| a.0 == c.praytime)
-                    .map(|(t, d)| {
+                    .filter(|(praytime_type, _)| *praytime_type == command.praytime)
+                    .map(|(praytime_type, praytime_date)| {
                         (
-                            c.clone(),
-                            t.clone(),
-                            d.add(Duration::seconds(c.time_diff as i64)),
+                            command.clone(),
+                            praytime_type.clone(),
+                            praytime_date.add(Duration::seconds(command.time_diff as i64)),
                         )
                     })
-                    .filter(|(_, _, d)| d > &Utc::now().naive_utc())
+                    .filter(|(_, _, date_time)| date_time > &Utc::now().naive_utc())
                     .collect::<Vec<_>>()
                     .into_iter()
             })
             .flatten()
-            .collect::<Vec<_>>();
-        commands_to_run
+            .collect::<Vec<_>>()
     }
 }
 
-fn into_vec(times: PraytimesOutput) -> Vec<(Praytime, NaiveDateTime)> {
-    use Praytime::*;
+fn into_vec(times: PraytimesOutput) -> Vec<(PraytimeType, NaiveDateTime)> {
+    use PraytimeType::*;
     let a = vec![
         (Imsak, times.imsak),
         (Fajr, times.fajr),
