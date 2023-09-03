@@ -34,7 +34,7 @@ fn get_today() -> NaiveDate {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 struct Config {
     location: Location,
-    params: CustomizableParams,
+    parameters: CustomizableParams,
     tune: Option<TuneOffsets>,
 }
 
@@ -42,7 +42,7 @@ pub fn run(args: Args) {
     let conf = std::fs::read(args.config).expect("failed to open file");
     let conf: Config = serde_json::from_slice(&conf).expect("failed to read configuration");
 
-    let times = Calculator::new(conf.params.get_params(), conf.tune.unwrap_or_default())
+    let times = Calculator::new(conf.parameters.get_params(), conf.tune.unwrap_or_default())
         .calculate(&conf.location, &args.date);
     let formatted = times.format_times(&args.format, &Local);
     if args.json {

@@ -18,7 +18,7 @@ struct Config {
     #[serde(default = "default_format")]
     format: String,
     location: Location,
-    params: CustomizableParams,
+    parameters: CustomizableParams,
     tune: Option<TuneOffsets>,
     commands: Vec<PraytimeCmd>,
 }
@@ -57,7 +57,7 @@ pub async fn run(args: Args) {
     }
 
     let calculator = Calculator::new(
-        config.params.get_params(),
+        config.parameters.get_params(),
         config.tune.clone().unwrap_or_default(),
     );
 

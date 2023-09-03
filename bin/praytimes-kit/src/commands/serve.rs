@@ -27,7 +27,7 @@ async fn calculate_handler(
 ) -> Result<Json<FormattedTimes>, (StatusCode, Json<Value>)> {
     let result = Calculator::new(
         payload.parameters.get_params(),
-        payload.tuning.unwrap_or_default(),
+        payload.tune.unwrap_or_default(),
     )
     .calculate(&payload.location, &payload.date);
 
@@ -91,7 +91,7 @@ pub struct CalculationInputs {
     pub date: NaiveDate,
     pub location: Location,
     pub parameters: CustomizableParams,
-    pub tuning: Option<TuneOffsets>,
+    pub tune: Option<TuneOffsets>,
     #[serde(default = "default_timezone")]
     pub zone: Zone,
 }
