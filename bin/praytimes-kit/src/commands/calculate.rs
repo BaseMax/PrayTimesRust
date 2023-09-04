@@ -21,9 +21,9 @@ pub struct Args {
     #[arg(short, long,default_value_t = get_today())]
     pub date: NaiveDate,
 
-    /// strftime compatible format
-    #[arg(short, long, default_value = "%H:%M:%S")]
-    pub format: String,
+    /// strftime compatible format ( overwrites the config file's format field )
+    #[arg(short, long)]
+    pub format: Option<String>,
 
     /// whether to output as json format or not
     #[arg(short, long, default_value_t = false)]
@@ -39,6 +39,12 @@ struct Config {
     location: Location,
     parameters: CustomizableParams,
     tune: Option<TuneOffsets>,
+    #[serde(default = "default_format")]
+    format: String,
+}
+
+fn default_format() -> String {
+    "%T".into()
 }
 
 pub fn run(args: Args) {
@@ -47,7 +53,7 @@ pub fn run(args: Args) {
 
     let times = Calculator::new(conf.parameters.get_params(), conf.tune.unwrap_or_default())
         .calculate(&conf.location, &args.date);
-    let formatted = times.format_times(&args.format, &Local);
+    let formatted = times.format_times(&args.format.unwrap_or(conf.format), &Local);
     if args.json {
         let json = serde_json::to_string_pretty(&formatted).unwrap();
         println!("{json}");
