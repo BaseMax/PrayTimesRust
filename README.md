@@ -21,7 +21,8 @@ WARRANTY.
 ## Projects
 
 - [praytimes lib](#library) - praytime calculator library
-- [praytimes-kit](#praytimes-kit) - praytime kit for calculation, webservice and notification daemon
+- [praytimes-kit](#praytimes-kit) - praytime kit for calculation, webservice and
+  notification daemon
 
 ## Library
 
@@ -201,6 +202,28 @@ Here is an example configuration:
     }
   ]
 }
+```
+
+##### systemd service
+
+You can define a systemd service for the praytimes daemon to control it using
+systemd
+
+```txt
+[Unit]
+Description=praytimes daemon
+
+[Service]
+Environment="PRAYTIMES_LOG=info"
+ExecStart=/path/to/praytimes-kit daemon /etc/praytimes/praytimes.json
+Restart=always
+```
+
+then you can run
+
+```sh
+sudo systemctl enable praytimes;
+sudo systemctl start praytimes;
 ```
 
 #### `calculate`
