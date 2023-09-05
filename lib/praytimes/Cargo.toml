@@ -3,6 +3,12 @@ name = "praytimes"
 version = "1.0.0"
 edition = "2021"
 authors = ["Max Bas MaxBaseCode@Gmail.Com","Ehsan ehsan2003.2003.382@gmail.com"]
+description = "Muslim prayer times calculation"
+license = "GPL-3.0"
+repository = "https://github.com/basemax/praytimesrust"
+
+keywords = ["prayer", "times", "muslim" ,"shia"]
+
 
 [dependencies]
 chrono = "0.4.26"
