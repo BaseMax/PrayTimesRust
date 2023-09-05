@@ -1,0 +1,415 @@
+{
+	"info": {
+		"_postman_id": "998c5242-ffba-429a-b69f-4150c461cd69",
+		"name": "Praytimes api",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "calculate",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"location\": {\n        \"latitude\": 40.7128,\n        \"longitude\": -74.0060\n    },\n    \"parameters\": {\n        \"method\": \"Tehran\"\n    },\n    \"date\": \"2023-09-05\",\n    \"format\":\"%T\",\n    \"zone\":{\"fixed\":-3600}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/calculate",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"calculate"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "format",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"location\":{\n        \"latitude\": 40.7128, \n        \"longitude\": -74.0060\n    },\n    \"parameters\":{\"method\":\"Tehran\"},\n    \"date\":\"2023-09-05\",\n    \"format\":\"%T\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/calculate",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"calculate"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "content-type",
+							"value": "application/json"
+						},
+						{
+							"key": "content-length",
+							"value": "176"
+						},
+						{
+							"key": "date",
+							"value": "Tue, 05 Sep 2023 03:16:30 GMT"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"imsak\": \"12:12:57\",\n    \"fajr\": \"12:22:57\",\n    \"sunrise\": \"13:56:44\",\n    \"dhuhr\": \"20:24:44\",\n    \"asr\": \"00:02:57\",\n    \"sunset\": \"02:52:04\",\n    \"maghrib\": \"03:11:47\",\n    \"isha\": \"04:04:19\",\n    \"midnight\": \"07:37:30\"\n}"
+				},
+				{
+					"name": "elevation",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"location\":{\n        \"latitude\": 40.7128, \n        \"longitude\": -74.0060,\n        \"elevation\":1000\n    },\n    \"parameters\":{\"method\":\"Tehran\"},\n    \"date\":\"2023-09-05\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/calculate",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"calculate"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "content-type",
+							"value": "application/json"
+						},
+						{
+							"key": "content-length",
+							"value": "365"
+						},
+						{
+							"key": "date",
+							"value": "Tue, 05 Sep 2023 03:18:10 GMT"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"imsak\": \"2023-09-05T12:12:57.371+03:30\",\n    \"fajr\": \"2023-09-05T12:22:57.371+03:30\",\n    \"sunrise\": \"2023-09-05T13:50:51.763+03:30\",\n    \"dhuhr\": \"2023-09-05T20:24:44.126+03:30\",\n    \"asr\": \"2023-09-06T00:02:57.945+03:30\",\n    \"sunset\": \"2023-09-06T02:57:56.972+03:30\",\n    \"maghrib\": \"2023-09-06T03:11:47.610+03:30\",\n    \"isha\": \"2023-09-06T04:04:19.917+03:30\",\n    \"midnight\": \"2023-09-06T07:40:27.172+03:30\"\n}"
+				},
+				{
+					"name": "calculate",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"location\": {\n        \"latitude\": 40.7128,\n        \"longitude\": -74.0060\n    },\n    \"parameters\": {\n        \"method\": \"Tehran\"\n    },\n    \"date\": \"2023-09-05\",\n    \"format\":\"%T\",\n    \"tune\": {\n        \"imsak\": 3,\n        \"dhuhr\": 3.5,\n        \"asr\": -3\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/calculate",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"calculate"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "content-type",
+							"value": "application/json"
+						},
+						{
+							"key": "content-length",
+							"value": "176"
+						},
+						{
+							"key": "date",
+							"value": "Tue, 05 Sep 2023 03:20:04 GMT"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"imsak\": \"12:15:57\",\n    \"fajr\": \"12:22:57\",\n    \"sunrise\": \"13:50:51\",\n    \"dhuhr\": \"20:28:14\",\n    \"asr\": \"23:59:57\",\n    \"sunset\": \"02:57:56\",\n    \"maghrib\": \"03:11:47\",\n    \"isha\": \"04:04:19\",\n    \"midnight\": \"07:40:27\"\n}"
+				},
+				{
+					"name": "tune",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"location\": {\n        \"latitude\": 40.7128,\n        \"longitude\": -74.0060\n    },\n    \"parameters\": {\n        \"method\": \"Tehran\"\n    },\n    \"date\": \"2023-09-05\",\n    \"format\":\"%T\",\n    \"tune\": {\n        \"imsak\": 3,\n        \"dhuhr\": 3.5,\n        \"asr\": -3\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/calculate",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"calculate"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "content-type",
+							"value": "application/json"
+						},
+						{
+							"key": "content-length",
+							"value": "176"
+						},
+						{
+							"key": "date",
+							"value": "Tue, 05 Sep 2023 03:22:32 GMT"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"imsak\": \"12:15:57\",\n    \"fajr\": \"12:22:57\",\n    \"sunrise\": \"13:56:44\",\n    \"dhuhr\": \"20:28:14\",\n    \"asr\": \"23:59:57\",\n    \"sunset\": \"02:52:04\",\n    \"maghrib\": \"03:11:47\",\n    \"isha\": \"04:04:19\",\n    \"midnight\": \"07:37:30\"\n}"
+				},
+				{
+					"name": "extra parameters",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"location\": {\n        \"latitude\": 40.7128,\n        \"longitude\": -74.0060\n    },\n    \"parameters\": {\n        \"method\": \"Tehran\",\n        \"extra\":{\"asr\":{\"factor\":3.5}}\n    },\n    \"date\": \"2023-09-05\",\n    \"format\":\"%T\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/calculate",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"calculate"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "content-type",
+							"value": "application/json"
+						},
+						{
+							"key": "content-length",
+							"value": "176"
+						},
+						{
+							"key": "date",
+							"value": "Tue, 05 Sep 2023 03:24:25 GMT"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"imsak\": \"12:12:57\",\n    \"fajr\": \"12:22:57\",\n    \"sunrise\": \"13:56:44\",\n    \"dhuhr\": \"20:24:44\",\n    \"asr\": \"01:36:38\",\n    \"sunset\": \"02:52:04\",\n    \"maghrib\": \"03:11:47\",\n    \"isha\": \"04:04:19\",\n    \"midnight\": \"07:37:30\"\n}"
+				},
+				{
+					"name": "completely custom parameters",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"location\": {\n        \"latitude\": 40.7128,\n        \"longitude\": -74.0060\n    },\n    \"parameters\": {\n        \"maghrib\": { \"minutes\": 0 },\n        \"midnight\": \"Standard\",\n        \"imsak\": { \"minutes\": 10 },\n        \"dhuhr\": { \"minutes\": 0 },\n        \"asr\": { \"factor\": 1 },\n        \"highLats\": \"NightMiddle\",\n        \"fajr\": { \"degree\": 18 },\n        \"isha\": { \"degree\": 18 }\n      },\n    \"date\": \"2023-09-05\",\n    \"format\":\"%T\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/calculate",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"calculate"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "content-type",
+							"value": "application/json"
+						},
+						{
+							"key": "content-length",
+							"value": "176"
+						},
+						{
+							"key": "date",
+							"value": "Tue, 05 Sep 2023 03:25:24 GMT"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"imsak\": \"12:11:11\",\n    \"fajr\": \"12:21:11\",\n    \"sunrise\": \"13:56:44\",\n    \"dhuhr\": \"20:24:44\",\n    \"asr\": \"00:02:57\",\n    \"sunset\": \"02:52:04\",\n    \"maghrib\": \"02:52:04\",\n    \"isha\": \"04:27:25\",\n    \"midnight\": \"08:24:24\"\n}"
+				},
+				{
+					"name": "utc timezone",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"location\": {\n        \"latitude\": 40.7128,\n        \"longitude\": -74.0060\n    },\n    \"parameters\": {\n        \"method\": \"Tehran\"\n    },\n    \"date\": \"2023-09-05\",\n    \"format\":\"%T\",\n    \"zone\":\"utc\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/calculate",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"calculate"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "content-type",
+							"value": "application/json"
+						},
+						{
+							"key": "content-length",
+							"value": "176"
+						},
+						{
+							"key": "date",
+							"value": "Tue, 05 Sep 2023 03:26:18 GMT"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"imsak\": \"08:42:57\",\n    \"fajr\": \"08:52:57\",\n    \"sunrise\": \"10:26:44\",\n    \"dhuhr\": \"16:54:44\",\n    \"asr\": \"20:32:57\",\n    \"sunset\": \"23:22:04\",\n    \"maghrib\": \"23:41:47\",\n    \"isha\": \"00:34:19\",\n    \"midnight\": \"04:07:30\"\n}"
+				},
+				{
+					"name": "fixed timezone",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"location\": {\n        \"latitude\": 40.7128,\n        \"longitude\": -74.0060\n    },\n    \"parameters\": {\n        \"method\": \"Tehran\"\n    },\n    \"date\": \"2023-09-05\",\n    \"format\":\"%T\",\n    \"zone\":{\"fixed\":-3600}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/calculate",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"calculate"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "content-type",
+							"value": "application/json"
+						},
+						{
+							"key": "content-length",
+							"value": "176"
+						},
+						{
+							"key": "date",
+							"value": "Tue, 05 Sep 2023 03:27:05 GMT"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"imsak\": \"07:42:57\",\n    \"fajr\": \"07:52:57\",\n    \"sunrise\": \"09:26:44\",\n    \"dhuhr\": \"15:54:44\",\n    \"asr\": \"19:32:57\",\n    \"sunset\": \"22:22:04\",\n    \"maghrib\": \"22:41:47\",\n    \"isha\": \"23:34:19\",\n    \"midnight\": \"03:07:30\"\n}"
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "host",
+			"value": "http://localhost:3535/",
+			"type": "default"
+		}
+	]
+}
