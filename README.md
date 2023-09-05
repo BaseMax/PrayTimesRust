@@ -1,15 +1,44 @@
-# PrayTimes Kit
+# Praytimes
+
+PrayTimesRust is a powerful and versatile Muslim prayer time calculator
+implemented in Rust. This project is built upon the PrayTimes.org library, a
+widely recognized resource for accurate prayer time calculations. Whether you're
+developing a website, application, or any other digital platform, PrayTimesRust
+offers a seamless way to integrate accurate prayer time calculations for Muslims
+worldwide.
+
+> Prayer Times Calculator for Rust Based on
+> [Praytimes.org](https://praytimes.org). Dont forget to give
+> [Praytimes.org](https://praytimes.org) based on their license :
+
+TERMS OF USE: Permission is granted to use this code, with or without
+modification, in any website or application provided that credit is given to the
+original work with a link back to PrayTimes.org.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY.
+
+## Projects
+
+- [praytimes lib](#library) - praytime calculator library
+- [praytimes-kit](#praytimes-kit) - praytime kit for calculation, webservice and notification daemon
+
+## Library
+
+see documentation in [docs.rs](https://docs.rs/praytimes)
+
+## PrayTimes Kit
 
 PrayTimesKit is a versatile toolkit for calculating Muslim prayer times and
 scheduling notifications around them. It is built on top of
 [PrayTimes.org](https://praytimes.org), a widely used prayer time calculation
 library.
 
-## Features
+### Features
 
 PrayTimesKit provides the following major features:
 
-### Accurate Prayer Time Calculations
+#### Accurate Prayer Time Calculations
 
 - Calculates prayer times for any location using coordinates
 - Supports several calculation methods like Muslim World League, ISNA, Egypt,
@@ -17,7 +46,7 @@ PrayTimesKit provides the following major features:
 - Highly configurable with customizable calculation parameters
 - Support for Shia calculation methods
 
-### Prayer Time daemon
+#### Prayer Time daemon
 
 - Scheduled notifications for prayer times using system notifications
 - Configure notifications to be triggered before/after any prayer time by a
@@ -26,21 +55,21 @@ PrayTimesKit provides the following major features:
   (which is different with the time that program runs because of the time diff),
   time difference
 
-### Prayer Time API
+#### Prayer Time API
 
 - HTTP API to get prayer times for a location and date
 - Request JSON payload can configure calculation parameters, timezone,
   formatting
 - Returns prayer times formatted as JSON or plain text
 
-## Usage
+### Usage
 
-### Configuration
+#### Configuration
 
 The configuration file is a JSON file that specifies the location, calculation
 parameters, notification commands, and time formats.
 
-#### Format
+##### Format
 
 The `format` field specifies how prayer times should be formatted. It uses
 [strftime](https://docs.rs/chrono/0.4.19/chrono/format/strftime/index.html)
@@ -48,7 +77,7 @@ syntax.
 
 Default is `%T` which formats the time as `HH:MM:SS`.
 
-#### Location
+##### Location
 
 The `location` field specifies the location coordinates.
 
@@ -59,13 +88,13 @@ The `location` field specifies the location coordinates.
 }
 ```
 
-#### Parameters
+##### Parameters
 
 The `parameters` field configures the calculation parameters.
 
 There are two possible formats:
 
-##### Specify Calculation Method
+###### Specify Calculation Method
 
 Use `method` to pick from a predefined calculation method:
 
@@ -85,7 +114,7 @@ Supported methods are:
 - `Tehran` - Institute of Geophysics, University of Tehran
 - `Jafari` - Shia Ithna-Ashari, Leva Institute, Qum
 
-##### Customize Parameters
+###### Customize Parameters
 
 Specify the `imsak`, `fajr`, `dhuhr` etc parameters directly:
 
@@ -102,7 +131,7 @@ Specify the `imsak`, `fajr`, `dhuhr` etc parameters directly:
 }
 ```
 
-#### Commands (configuration field)
+##### Commands (configuration field)
 
 The `commands` field contains the notification commands to run. Each command
 specifies:
@@ -114,17 +143,17 @@ specifies:
 The command text can contain variables like `$TYPE`, `$TIME`, `$DIFF` which will
 be interpolated.
 
-#### Tune
+##### Tune
 
 The `tune` field allows adjusting prayer times.and is a key-value pair of
 praytime names with a number the number is either negative or positive and is
 represented in minutes
 
-#### Cli sub commands
+##### Cli sub commands
 
 PrayTimesKit provides the following commands:
 
-### `serve`
+#### `serve`
 
 Starts the HTTP server for the prayer time API.
 
@@ -132,7 +161,7 @@ Starts the HTTP server for the prayer time API.
 praytimes-kit serve
 ```
 
-### `daemon`
+#### `daemon`
 
 Runs the prayer daemon based on a configuration file.
 
@@ -174,7 +203,7 @@ Here is an example configuration:
 }
 ```
 
-### `calculate`
+#### `calculate`
 
 Simple CLI to get prayer times for a location on a specific date. Supports text
 and JSON output formats
@@ -189,7 +218,7 @@ The configuration file contains the location details and calculation parameters.
 Note that you can use one configuration file for both daemon and calculate
 commands the unnecessary fields won't effect calculate command
 
-#### help
+##### help
 
 ```txt
 simple cli to show praytimes for specific day
@@ -205,7 +234,7 @@ Options:
   -V, --version          Print version
 ```
 
-## Integration
+### Integration
 
 PrayTimesKit provides building blocks that can be easily integrated into other
 apps and services:
@@ -214,12 +243,12 @@ apps and services:
 - Call the **HTTP API** from any language to get prayer times
 - Run the **CLI** on your desktop to get praytimes
 
-## Credits
+### Credits
 
 PrayTimesKit is built on top of [PrayTimes.org](https://praytimes.org). The time
 calculation code is adapted from the original JavaScript library.
 
-## License
+### License
 
 GNU GPL v3.0
 
