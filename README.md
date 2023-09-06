@@ -156,10 +156,45 @@ PrayTimesKit provides the following commands:
 
 #### `serve`
 
+
 Starts the HTTP server for the prayer time API.
 
 ```
 praytimes-kit serve
+```
+
+You can configure it using the `PORT` and `HOST` environment variables to run on a specific port or listen on specific ip.
+
+You can also use Docker to run it:
+
+```sh
+docker run -p 3535:3535 -it basemax/praytimes:1.0
+```
+
+Or with Docker Compose:
+
+```yml
+version: "3"
+
+services:
+
+  praytimes:
+    image: basemax/praytimes:1.0
+    ports:
+      - "3535:3535"
+    environment:
+      HOST: "0.0.0.0"
+```
+
+This runs the `basemax/praytimes:1.0` Docker image, exposes port 3535, and sets the `HOST` env var so it listens on all interfaces.
+
+Some additional Compose examples:
+
+- Set a custom port:
+
+```
+ports:
+  - "8080:3535"
 ```
 
 #### `daemon`
