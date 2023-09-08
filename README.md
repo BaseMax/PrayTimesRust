@@ -61,8 +61,9 @@ PrayTimesKit provides the following major features:
 - HTTP API to get prayer times for a location and date
 - Request JSON payload can configure calculation parameters, timezone,
   formatting
-- Returns prayer times formatted as JSON or plain text
-
+- Returns prayer times formatted as JSON
+![screenshot 1](./screenshots/1.jpg)
+![screenshot 2](./screenshots/2.jpg)
 ### Usage
 
 #### Configuration
