@@ -16,6 +16,9 @@ pub enum SubCommands {
 
     /// daemon which helps with notification and similar works on praytimes
     Daemon(commands::daemon::Args),
+
+    /// get next praytime event 
+    Next(commands::next::Args)
 }
 
 pub async fn run(args: Args) {
@@ -23,5 +26,6 @@ pub async fn run(args: Args) {
         SubCommands::Serve => commands::serve::serve().await,
         SubCommands::Calculate(c) => commands::calculate::run(c),
         SubCommands::Daemon(d) => commands::daemon::run(d).await,
+        SubCommands::Next(n) => commands::next::run(n),
     }
 }

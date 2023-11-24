@@ -1,3 +1,4 @@
+use core::fmt;
 use std::fmt::Display;
 
 use chrono::{NaiveDateTime, TimeZone};
@@ -257,4 +258,20 @@ pub enum PraytimeType {
     Maghrib,
     Isha,
     Midnight,
+}
+
+impl fmt::Display for PraytimeType {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            PraytimeType::Imsak => write!(f, "imsak"),
+            PraytimeType::Fajr => write!(f, "fajr"),
+            PraytimeType::Sunrise => write!(f, "sunrise"),
+            PraytimeType::Dhuhr => write!(f, "dhuhr"),
+            PraytimeType::Asr => write!(f, "asr"),
+            PraytimeType::Sunset => write!(f, "sunset"),
+            PraytimeType::Maghrib => write!(f, "maghrib"),
+            PraytimeType::Isha => write!(f, "isha"),
+            PraytimeType::Midnight => write!(f, "midnight"),
+        }
+    }
 }
