@@ -1,11 +1,11 @@
 use praytimes::{
-    types::{FormattedTimes, Location, TuneOffsets},
+    types::{Location, TuneOffsets},
     Calculator,
 };
 use serde::{Deserialize, Serialize};
-use std::path::PathBuf;
+use std::{matches, path::PathBuf};
 
-use chrono::{Datelike, Local, NaiveDate};
+use chrono::{Datelike, Local, NaiveDate, Utc};
 use clap::Parser;
 
 use crate::base::CustomizableParams;
@@ -58,18 +58,46 @@ pub fn run(args: Args) {
         let json = serde_json::to_string_pretty(&formatted).unwrap();
         println!("{json}");
     } else {
-        print_times(formatted);
-    }
-}
+        let now = Utc::now().naive_utc();
+        if matches!(times.imsak,Some(imsak) if imsak > now) {
+            println!("----------")
+        }
+        println!("imsak\t\t{}", formatted.imsak.unwrap_or("-----".into()));
+        if matches!((times.imsak,times.fajr),(Some(imsak),Some(fajr)) if imsak < now && now< fajr) {
+            println!("----------")
+        }
+        println!("fajr\t\t{}", formatted.fajr.unwrap_or("-----".into()));
+        if matches!((times.fajr,times.sunrise),(Some(a),Some(b)) if a < now && now< b) {
+            println!("----------")
+        }
+        println!("sunrise\t\t{}", formatted.sunrise.unwrap_or("-----".into()));
+        if matches!((times.sunrise,times.dhuhr),(Some(a),Some(b)) if a < now && now< b) {
+            println!("----------")
+        }
+        println!("dhuhr\t\t{}", formatted.dhuhr.unwrap_or("-----".into()));
+        if matches!((times.dhuhr,times.asr),(Some(a),Some(b)) if a < now && now< b) {
+            println!("----------")
+        }
+        println!("asr\t\t{}", formatted.asr.unwrap_or("-----".into()));
+        if matches!((times.asr,times.sunset),(Some(a),Some(b)) if a < now && now< b) {
+            println!("----------")
+        }
+        println!("sunset\t\t{}", formatted.sunset.unwrap_or("-----".into()));
+        if matches!((times.sunset,times.maghrib),(Some(a),Some(b)) if a < now && now< b) {
+            println!("----------")
+        }
+        println!("maghrib\t\t{}", formatted.maghrib.unwrap_or("-----".into()));
 
-fn print_times(times: FormattedTimes) {
-    println!("imsak\t\t{}", times.imsak.unwrap_or("-----".into()));
-    println!("fajr\t\t{}", times.fajr.unwrap_or("-----".into()));
-    println!("sunrise\t\t{}", times.sunrise.unwrap_or("-----".into()));
-    println!("dhuhr\t\t{}", times.dhuhr.unwrap_or("-----".into()));
-    println!("asr\t\t{}", times.asr.unwrap_or("-----".into()));
-    println!("sunset\t\t{}", times.sunset.unwrap_or("-----".into()));
-    println!("maghrib\t\t{}", times.maghrib.unwrap_or("-----".into()));
-    println!("isha\t\t{}", times.isha.unwrap_or("-----".into()));
-    println!("midnight\t{}", times.midnight.unwrap_or("-----".into()));
+        if matches!((times.maghrib,times.isha),(Some(a),Some(b)) if a < now && now< b) {
+            println!("----------")
+        }
+        println!("isha\t\t{}", formatted.isha.unwrap_or("-----".into()));
+        if matches!((times.isha,times.midnight),(Some(a),Some(b)) if a < now && now< b) {
+            println!("----------")
+        }
+        println!("midnight\t{}", formatted.midnight.unwrap_or("-----".into()));
+        if matches!(times.midnight,Some(a) if a < now ) {
+            println!("----------")
+        }
+    }
 }
