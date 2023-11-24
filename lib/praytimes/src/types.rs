@@ -199,6 +199,25 @@ impl PraytimesOutput {
             midnight: self.midnight.map(|d| format_time(d, format, zone)),
         }
     }
+
+    pub fn into_vec(&self) -> Vec<(PraytimeType, NaiveDateTime)> {
+        use PraytimeType::*;
+        let a = vec![
+            (Imsak, self.imsak),
+            (Fajr, self.fajr),
+            (Sunrise, self.sunrise),
+            (Dhuhr, self.dhuhr),
+            (Asr, self.asr),
+            (Sunset, self.sunset),
+            (Maghrib, self.maghrib),
+            (Isha, self.isha),
+            (Midnight, self.midnight),
+        ];
+        return a
+            .into_iter()
+            .filter_map(|(t, p)| p.map(|p| (t, p)))
+            .collect();
+    }
 }
 
 pub fn format_time<TZ>(time: chrono::NaiveDateTime, format: &str, tz: &TZ) -> String
@@ -223,4 +242,19 @@ pub struct TuneOffsets {
     pub maghrib: Option<f64>,
     pub isha: Option<f64>,
     pub midnight: Option<f64>,
+}
+
+#[derive(Debug, Copy, Eq, PartialEq, PartialOrd, Ord, Hash, Clone)]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", serde(rename_all = "lowercase"))]
+pub enum PraytimeType {
+    Imsak,
+    Fajr,
+    Sunrise,
+    Dhuhr,
+    Asr,
+    Sunset,
+    Maghrib,
+    Isha,
+    Midnight,
 }

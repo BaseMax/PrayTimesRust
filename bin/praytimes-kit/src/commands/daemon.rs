@@ -6,7 +6,7 @@ use clap::Parser;
 use env_logger::Env;
 use log::{error, info};
 use praytimes::{
-    types::{format_time, Location, PraytimesOutput, TuneOffsets},
+    types::{format_time, Location, PraytimeType, TuneOffsets},
     Calculator,
 };
 use serde::{Deserialize, Serialize};
@@ -29,19 +29,6 @@ fn default_format() -> String {
     "%T".into()
 }
 
-#[derive(Debug, Copy, Eq, PartialEq, PartialOrd, Ord, Hash, Clone, Serialize, Deserialize)]
-#[serde(rename_all = "lowercase")]
-enum PraytimeType {
-    Imsak,
-    Fajr,
-    Sunrise,
-    Dhuhr,
-    Asr,
-    Sunset,
-    Maghrib,
-    Isha,
-    Midnight,
-}
 #[derive(Debug, Clone, Serialize, Deserialize)]
 struct PraytimeCmd {
     time_diff: i32,
@@ -137,7 +124,11 @@ struct Daemon {
 }
 impl Daemon {
     fn execute_for_day(&self, next_day: NaiveDate) {
-        let praytimes = into_vec(self.calculator.calculate(&self.location, &next_day));
+        let praytimes = self
+            .calculator
+            .calculate(&self.location, &next_day)
+            .into_vec();
+
         let commands_to_run = self.get_runnable_commands(praytimes);
 
         for cmd in commands_to_run {
@@ -168,23 +159,4 @@ impl Daemon {
             .flatten()
             .collect::<Vec<_>>()
     }
-}
-
-fn into_vec(times: PraytimesOutput) -> Vec<(PraytimeType, NaiveDateTime)> {
-    use PraytimeType::*;
-    let a = vec![
-        (Imsak, times.imsak),
-        (Fajr, times.fajr),
-        (Sunrise, times.sunrise),
-        (Dhuhr, times.dhuhr),
-        (Asr, times.asr),
-        (Sunset, times.sunset),
-        (Maghrib, times.maghrib),
-        (Isha, times.isha),
-        (Midnight, times.midnight),
-    ];
-    return a
-        .into_iter()
-        .filter_map(|(t, p)| p.map(|p| (t, p)))
-        .collect();
 }
