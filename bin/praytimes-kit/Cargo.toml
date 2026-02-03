@@ -16,7 +16,7 @@ serde_json = "1.0.105"
 tokio = { version = "1.38.2", features = ["full"] }
 praytimes = { path="../../lib/praytimes" ,features = ["serde"],version="1.0.0" }
 tracing = "0.1.37"
-tracing-subscriber = { version = "0.3.16", features = ["env-filter"]}
+tracing-subscriber = { version = "0.3.20", features = ["env-filter"]}
 tower-http = { version = "0.3.4", features = ["trace"] }
 chrono = "0.4.26"
 
